@@ -1,40 +1,26 @@
-import {lazy, type JSX} from "react";
-import * as React from "react";
+import {lazy} from "react";
 import {Route} from "react-router-dom";
-
-
-type RouteType = {
-    path: string;
-    element: React.LazyExoticComponent<() => JSX.Element>;
-    nested?: RouteType[]
-}
+import type {RouteType} from "../types.ts";
 
 const routes: RouteType[] = [
     {
         path: "",
-        element: lazy(() => import("@pages/home"))
-    },
-    {
-        path: "admin",
-        element: lazy(() => import("@pages/admin")),
+        element: lazy(() => import("@pages/HomeTemplate")),
         nested: [
             {
-                path: "dashboard",
-                element: lazy(() => import("@pages/admin/dashboard")),
+                path: "",
+                element: lazy(() => import("@pages/HomeTemplate/Home")),
             }
         ]
     },
     {
-        path: 'sign-in',
-        element: lazy(()=>import("@pages/auth//login")),
-    },
-    {
-        path: 'sign-up',
-        element: lazy(()=>import("@pages/auth/register")),
+        path: "admin",
+        element: lazy(() => import("@pages/AdminTemplate")),
+        nested: [ ]
     },
     {
         path:'*',
-        element: lazy(()=>import("@pages/pageNotFound"))
+        element: lazy(()=>import("@pages/PageNotFound"))
     }
 ]
 

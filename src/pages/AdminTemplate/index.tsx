@@ -1,7 +1,7 @@
 
 function AdminTemplate() {
     return (
-        <div></div>
+        <div>fdfdf</div>
     );
 }
 

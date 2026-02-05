@@ -1,10 +1,11 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import type {InitState, TApiResponse} from "../types.ts";
+import type {InitState, TApiResponse, User} from "@types";
 import {apiConfig} from "./apiConfig.ts";
 import type {AxiosError} from "axios";
 
+const token = localStorage.getItem("USER_LOGIN") ?? ''
 
-const data = localStorage.getItem("USER_LOGIN") ? JSON.parse(localStorage.getItem("USER_LOGIN")) : null;
+const data = token ? JSON.parse(token) : null;
 
 const initialState: InitState<TApiResponse<object>> = {
     loading: false,
@@ -16,11 +17,7 @@ export const loginService = createAsyncThunk(
     "loginService",
     async (user, {rejectWithValue}) => {
 try {
-    const response = await apiConfig.post("auth/signup", user);
-    const role = response.data.content?.role;
-    if (role === 'USER') {
-        console.log(user);
-    }
+    const response = await apiConfig.post<TApiResponse<User>>("auth/signin", user);
 
     const userInfoString = JSON.stringify(response.data.content)
     localStorage.setItem("USER_LOGIN", userInfoString);

@@ -9,7 +9,7 @@ export type InitState<T> = {
 }
 
 export type TApiResponse<T> = {
-    statusCode: number;
+    statusCode?: number;
     message?: string;
     content?: T;
 }
@@ -23,4 +23,20 @@ export type RouteType = {
 export type AuthModalProps = {
     isOpen: boolean;
     onClose: () => void;
+}
+
+// export type AuthField = {
+//     email?: string;
+//     password?: string;
+// };
+
+export type User = {
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+    birthday: string;
+    avatar: string;
+    gender: string;
+    role: string;
 }

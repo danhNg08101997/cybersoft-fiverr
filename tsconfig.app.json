@@ -27,6 +27,7 @@
     /* Alias */
     "baseUrl": ".",
     "paths": {
+      "@types": ["src/types.ts"],
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@assets/*": ["src/assets/*"],

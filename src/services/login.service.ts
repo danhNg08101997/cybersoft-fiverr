@@ -7,7 +7,7 @@ const token = localStorage.getItem("USER_LOGIN") ?? ''
 
 const data = token ? JSON.parse(token) : null;
 
-const initialState: InitState<TApiResponse<object>> = {
+const initialState: InitState<TApiResponse<User>> = {
     loading: false,
     data,
     error: null,
@@ -22,7 +22,7 @@ try {
     const userInfoString = JSON.stringify(response.data.content)
     localStorage.setItem("USER_LOGIN", userInfoString);
 
-    return response.data.content;
+    return response.data.content
 }catch (error){
     return rejectWithValue(error);
 }
@@ -39,7 +39,7 @@ const loginSlice = createSlice({
         });
         builder.addCase(loginService.fulfilled, (state, action) => {
             state.loading = false;
-            state.data = action.payload;
+            state.data = action.payload as TApiResponse<User>;
         });
         builder.addCase(loginService.rejected, (state, action) => {
             state.loading = false;

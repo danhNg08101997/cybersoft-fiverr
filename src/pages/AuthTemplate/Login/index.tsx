@@ -13,7 +13,7 @@ function LoginComponent(props: AuthModalProps) {
 
     const {loading, data} = useSelector((state: RootState) => state.loginReducer);
 
-    const onSubmit: FormProps<User>['onFinish'] = (values) => {
+    const onSubmit: FormProps<User>['onFinish'] = (values: User | undefined) => {
         dispatch(loginService(values))
     };
 
@@ -21,10 +21,10 @@ function LoginComponent(props: AuthModalProps) {
         return <div>Loading...</div>
     }
 
-    if (data?.user?.role === "ADMIN") {
+    if (data?.content?.role === "ADMIN") {
         return <Navigate to="admin"/>
-    }else if(data?.user?.role === "USER") {
-        console.log("🚀 ~ LoginComponent ~ data?.user?.role: ", data?.user?.role);
+    }else if(data?.content?.role === "USER") {
+        console.log("🚀 ~ LoginComponent ~ data?.content?.role: ", data?.content?.role);
     }
 
     return (

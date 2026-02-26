@@ -34,7 +34,35 @@ function RegisterComponent(props: AuthModalProps) {
                     name="email"
                     rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
                 >
-                    <Input.Password />
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Phone"
+                    name="phone"
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Birthday"
+                    name="birthday"
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Gender"
+                    name="gender"
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Role"
+                    name="role"
+                >
+                    <Input />
                 </Form.Item>
 
                 <Button type="primary" htmlType="submit" block>

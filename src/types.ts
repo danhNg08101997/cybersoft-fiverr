@@ -25,18 +25,15 @@ export type AuthModalProps = {
     onClose: () => void;
 }
 
-// export type AuthField = {
-//     email?: string;
-//     password?: string;
-// };
-
 export type User = {
-    name: string;
-    email: string;
-    password: string;
-    phone: string;
-    birthday: string;
-    avatar: string;
-    gender: string;
-    role: string;
+    name?: string;
+    email?: string;
+    password?: string;
+    phone?: string;
+    birthday?: string;
+    avatar?: string;
+    gender?: string;
+    role?: string;
+    skill?: Array<string>;
+    certification?: Array<string>;
 }

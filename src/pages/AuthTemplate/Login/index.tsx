@@ -1,5 +1,5 @@
 import {Button, Form, type FormProps, Input, Modal} from "antd";
-import type { AuthModalProps, User} from '@types';
+import type {AuthModalProps} from '@types';
 import {useDispatch, useSelector} from "react-redux";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {loginService} from "@services/login.service.ts";
@@ -13,18 +13,19 @@ function LoginComponent(props: AuthModalProps) {
 
     const {loading, data} = useSelector((state: RootState) => state.loginReducer);
 
-    const onSubmit: FormProps<User>['onFinish'] = (values: User | undefined) => {
-        dispatch(loginService(values))
+    const onSubmit: FormProps['onFinish'] = (values) => {
+        if (!values) return;
+        dispatch(loginService(values));
     };
 
-    if(loading){
+    if (loading) {
         return <div>Loading...</div>
     }
 
-    if (data?.content?.role === "ADMIN") {
+    if (data?.user?.role === "ADMIN") {
         return <Navigate to="admin"/>
-    }else if(data?.content?.role === "USER") {
-        console.log("🚀 ~ LoginComponent ~ data?.content?.role: ", data?.content?.role);
+    } else if (data?.user?.role === "USER") {
+        console.log("🚀 ~ LoginComponent ~ data?.user?.role: ", data?.user?.role);
     }
 
     return (

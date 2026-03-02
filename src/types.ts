@@ -37,3 +37,8 @@ export type User = {
     skill?: Array<string>;
     certification?: Array<string>;
 }
+
+export type LoginResponse = {
+    token: string;
+    user: User;
+};

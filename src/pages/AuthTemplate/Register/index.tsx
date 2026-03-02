@@ -32,7 +32,7 @@ function RegisterComponent(props: AuthModalProps) {
                 <Form.Item
                     label="Email"
                     name="email"
-                    rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+                    rules={[{ required: true, message: "Vui lòng nhập email" }]}
                 >
                     <Input />
                 </Form.Item>
@@ -66,7 +66,7 @@ function RegisterComponent(props: AuthModalProps) {
                 </Form.Item>
 
                 <Button type="primary" htmlType="submit" block>
-                    Đăng nhập
+                    Đăng ký
                 </Button>
             </Form>
         </Modal>

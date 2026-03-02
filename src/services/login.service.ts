@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import type {InitState, TApiResponse, User} from "@types";
+import type {InitState, LoginResponse, TApiResponse} from "@types";
 import {apiConfig} from "./apiConfig.ts";
 import type {AxiosError} from "axios";
 
@@ -7,19 +7,19 @@ const token = localStorage.getItem("USER_LOGIN") ?? ''
 
 const data = token ? JSON.parse(token) : null;
 
-const initialState: InitState<TApiResponse<User>> = {
+const initialState: InitState<LoginResponse> = {
     loading: false,
     data,
     error: null,
 }
 
 export const loginService = createAsyncThunk(
-    "loginService",
+    "auth/loginService",
     async (user, {rejectWithValue}) => {
 try {
-    const response = await apiConfig.post<TApiResponse<User>>("auth/signin", user);
+    const response = await apiConfig.post<TApiResponse<LoginResponse>>("auth/signin", user);
 
-    const userInfoString = JSON.stringify(response.data.content)
+    const userInfoString = JSON.stringify(response.data?.content?.token)
     localStorage.setItem("USER_LOGIN", userInfoString);
 
     return response.data.content
@@ -39,7 +39,7 @@ const loginSlice = createSlice({
         });
         builder.addCase(loginService.fulfilled, (state, action) => {
             state.loading = false;
-            state.data = action.payload as TApiResponse<User>;
+            state.data = action.payload as LoginResponse;
         });
         builder.addCase(loginService.rejected, (state, action) => {
             state.loading = false;

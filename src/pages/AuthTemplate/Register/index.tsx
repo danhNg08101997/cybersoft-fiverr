@@ -1,68 +1,103 @@
 import type {AuthModalProps} from "../../../types.ts";
-import {Button, Form, Input, Modal} from "antd";
+import {Button, DatePicker, Form, type FormProps, Input, Modal} from "antd";
+import type {AppDispatch, RootState} from "@store/index.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {loginService} from "@services/login.service.ts";
 
 function RegisterComponent(props: AuthModalProps) {
     const {isOpen, onClose} = props
 
+    const dispatch: AppDispatch = useDispatch();
+
+    const {loading, data} = useSelector((state: RootState) => state.registerReducer);
+
+    const onSubmit: FormProps['onFinish'] = (values) => {
+        if (!values) return;
+        if (values.birthday){
+            {
+                ...values,
+                values.birthday.toString("dd-MM-yyyy")
+            }
+
+        }
+        console.log("🚀 ~ onSubmit ~ values: ", values);
+
+        // dispatch(loginService(values));
+    };
+
     return (
         <Modal
-            title="Register"
+            title="Đăng Ký"
             open={isOpen}
             footer={null}
             closable={false}
             onCancel={onClose}
         >
-            <Form layout="vertical">
+            <Form layout="vertical" onFinish={onSubmit} autoComplete="off">
                 <Form.Item
                     label="Username"
                     name="username"
-                    rules={[{ required: true, message: "Vui lòng nhập username" }]}
+                    rules={[{required: true, message: "Vui lòng nhập username"}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item
                     label="Password"
                     name="password"
-                    rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+                    rules={[{required: true, message: "Vui lòng nhập mật khẩu"}]}
                 >
-                    <Input.Password />
+                    <Input.Password/>
                 </Form.Item>
 
                 <Form.Item
                     label="Email"
                     name="email"
-                    rules={[{ required: true, message: "Vui lòng nhập email" }]}
+                    rules={[{required: true, message: "Vui lòng nhập email"}]}
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item
                     label="Phone"
                     name="phone"
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item
                     label="Birthday"
                     name="birthday"
                 >
-                    <Input />
+                    <DatePicker style={{ width: 470 }}/>
                 </Form.Item>
 
                 <Form.Item
                     label="Gender"
                     name="gender"
                 >
-                    <Input />
+                    <Input/>
                 </Form.Item>
 
                 <Form.Item
                     label="Role"
                     name="role"
                 >
-                    <Input />
+                    <Input/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Skill"
+                    name="skill"
+                >
+                    <Input/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Certification"
+                    name="certification"
+                >
+                    <Input/>
                 </Form.Item>
 
                 <Button type="primary" htmlType="submit" block>

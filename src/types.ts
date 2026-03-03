@@ -8,17 +8,22 @@ export type InitState<T> = {
     error: AxiosError<never> | null;
 }
 
+export type RouteType = {
+    path: string;
+    element: React.LazyExoticComponent<() => JSX.Element>;
+    nested?: RouteType[]
+}
+
 export type TApiResponse<T> = {
     statusCode?: number;
     message?: string;
     content?: T;
 }
 
-export type RouteType = {
-    path: string;
-    element: React.LazyExoticComponent<() => JSX.Element>;
-    nested?: RouteType[]
-}
+export type LoginResponse = {
+    token: string;
+    user: User;
+};
 
 export type AuthModalProps = {
     isOpen: boolean;
@@ -31,14 +36,9 @@ export type User = {
     password?: string;
     phone?: string;
     birthday?: string;
-    avatar?: string;
     gender?: string;
     role?: string;
     skill?: Array<string>;
     certification?: Array<string>;
 }
 
-export type LoginResponse = {
-    token: string;
-    user: User;
-};

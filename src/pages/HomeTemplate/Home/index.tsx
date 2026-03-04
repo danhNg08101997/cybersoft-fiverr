@@ -3,7 +3,7 @@ import ServiceComponent from "@pages/HomeTemplate/Home/Services/Services.tsx";
 import FeatureComponent from "@pages/HomeTemplate/Home/Features";
 import TestimonialComponent from "@pages/HomeTemplate/Home/Testimonial/Testimonial.tsx";
 import MarketplaceComponent from "@pages/HomeTemplate/Home/Marketplace";
-import FooterHome from "@pages/HomeTemplate/_Components/Footer";
+import FooterHome from "@components/Footer";
 
 function Home() {
 

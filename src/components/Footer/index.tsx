@@ -1,8 +1,6 @@
-
-type FooterCol = {
-    title: string;
-    items: Array<{ label: string; subLabel?: string }>;
-};
+import type {FooterCol} from "@types";
+import * as React from "react";
+import {NavLink} from "react-router-dom";
 
 const footerCols: FooterCol[] = [
     {
@@ -79,20 +77,20 @@ function SocialIcon({
     label: string;
 }) {
     return (
-        <a
-            href="#"
+        <NavLink
+            to="#"
             aria-label={label}
             className="grid h-9 w-9 place-items-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
         >
             {children}
-        </a>
+        </NavLink>
     );
 }
 
 function FooterLink({ label, subLabel }: { label: string; subLabel?: string }) {
     return (
-        <a
-            href="#"
+        <NavLink
+            to="#"
             className="group block py-1 text-[15px] text-slate-500 hover:text-slate-700"
         >
             <div className="leading-6">{label}</div>
@@ -101,7 +99,7 @@ function FooterLink({ label, subLabel }: { label: string; subLabel?: string }) {
                     {subLabel}
                 </div>
             ) : null}
-        </a>
+        </NavLink>
     );
 }
 

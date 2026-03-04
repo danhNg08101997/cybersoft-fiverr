@@ -47,3 +47,26 @@ export interface ServiceInterface {
     subtitle: string
     img: string
 }
+
+export type FooterCol = {
+    title: string;
+    items: Array<{ label: string; subLabel?: string }>;
+};
+
+export type MarketItem = {
+    label: string;
+    icon: React.ReactNode;
+};
+
+export type Testimonial = {
+    name: string;
+    role: string;
+    brand: string;
+    quote: string;
+    videoThumb: string;
+};
+
+export type Feature = {
+    title: string;
+    desc: string;
+};

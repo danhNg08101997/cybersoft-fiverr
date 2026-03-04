@@ -2,7 +2,9 @@ import type {AuthModalProps} from "../../../types.ts";
 import {Button, DatePicker, Form, type FormProps, Input, Modal} from "antd";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {useDispatch, useSelector} from "react-redux";
-import {loginService} from "@services/login.service.ts";
+import dayjs from "dayjs";
+import {registerService} from "@services/register.service.ts";
+import LoginComponent from "@pages/AuthTemplate/Login";
 
 function RegisterComponent(props: AuthModalProps) {
     const {isOpen, onClose} = props
@@ -13,17 +15,29 @@ function RegisterComponent(props: AuthModalProps) {
 
     const onSubmit: FormProps['onFinish'] = (values) => {
         if (!values) return;
+
         if (values.birthday){
-            {
-                ...values,
-                values.birthday.toString("dd-MM-yyyy")
-            }
-
+            values.birthday = dayjs(values.birthday).format("DD-MM-YYYY");
         }
-        console.log("🚀 ~ onSubmit ~ values: ", values);
 
-        // dispatch(loginService(values));
+        if(values.skill){
+            values.skill = values.skill.split(";");
+        }
+
+        if(values.certification){
+            values.certification = values.certification.split(";");
+        }
+
+        dispatch(registerService(values));
     };
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
+    if(data){
+        return <LoginComponent isOpen={!loading} />
+    }
 
     return (
         <Modal

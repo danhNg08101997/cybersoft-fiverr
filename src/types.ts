@@ -27,7 +27,7 @@ export type LoginResponse = {
 
 export type AuthModalProps = {
     isOpen: boolean;
-    onClose: () => void;
+    onClose?: () => void;
 }
 
 export type User = {

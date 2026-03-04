@@ -42,3 +42,8 @@ export type User = {
     certification?: Array<string>;
 }
 
+export interface ServiceInterface {
+    title: string
+    subtitle: string
+    img: string
+}

@@ -3,7 +3,7 @@ import NavbarHome from "@pages/HomeTemplate/_Components/NavbarHome";
 
 function HomeTemplate() {
     return (
-        <div>
+        <div className="w-full min-h-screen bg-white">
             <NavbarHome/>
             <Outlet/>
 

@@ -14,7 +14,6 @@ export const searchJobService = createAsyncThunk(
     async (jobName, {rejectWithValue}) => {
         try{
             const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen<CongViec>>>(`cong-viec/lay-danh-sach-cong-viec-theo-ten/${jobName}`);
-            console.log("🚀 ~  ~ response: ", response);
             return response.data.content
         }catch (error){
             return rejectWithValue(error);

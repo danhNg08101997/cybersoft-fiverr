@@ -11,8 +11,8 @@ function JobListTemplate() {
     return (
         <>
             <NavBarJobList />
-            <TopCategoryBar/>
-            <FooterHome/>
+            <TopCategoryBar />
+            <FooterHome />
         </>
     );
 }

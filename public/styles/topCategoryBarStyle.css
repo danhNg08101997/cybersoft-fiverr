@@ -1,0 +1,95 @@
+/* wrapper giống Fiverr */
+.fiverr-topnav {
+    position: relative;
+    z-index: 50;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+}
+.fiverr-topnav__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* antd menu style */
+.fiverr-topnav__menu.ant-menu-horizontal {
+    border-bottom: none !important;
+    height: 44px;
+    line-height: 44px;
+    justify-content: center;
+}
+.fiverr-topnav__menu.ant-menu-horizontal > .ant-menu-item {
+    padding: 0 14px !important;
+    margin: 0 !important;
+}
+.fiverr-topnav__item {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    height: 44px;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+}
+.fiverr-topnav__item:hover {
+    color: #1f2937;
+}
+.fiverr-topnav__item.is-active {
+    border-bottom-color: #22c55e; /* gạch xanh như ảnh */
+    color: #1f2937;
+}
+.fiverr-topnav__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Mega dropdown */
+.fiverr-mega {
+    width: 100vw;
+    background: #fff;
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f0f0f0;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+.fiverr-mega__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 24px 28px;
+}
+.fiverr-mega__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 44px;
+}
+.fiverr-mega__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 14px;
+}
+.fiverr-mega__list {
+    display: grid;
+    gap: 10px;
+}
+.fiverr-mega__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #6b7280;
+    text-decoration: none;
+}
+.fiverr-mega__item:hover {
+    color: #111827;
+}
+.fiverr-mega__item.is-link {
+    color: #3b82f6;
+    font-weight: 500;
+}
+.fiverr-mega__tag {
+    font-size: 11px !important;
+    line-height: 16px !important;
+    padding: 0 6px !important;
+    border-radius: 999px !important;
+}

@@ -1,6 +1,6 @@
 import {lazy} from "react";
 import {Route} from "react-router-dom";
-import type {RouteType} from "../types.ts";
+import type {RouteType} from "@types";
 
 const routes: RouteType[] = [
     {
@@ -14,9 +14,14 @@ const routes: RouteType[] = [
         ]
     },
     {
+        path:"job-list",
+        element: lazy(() => import("@pages/JobListTemplate")),
+        nested: []
+    },
+    {
         path: "admin",
         element: lazy(() => import("@pages/AdminTemplate")),
-        nested: [ ]
+        nested: []
     },
     {
         path:'*',

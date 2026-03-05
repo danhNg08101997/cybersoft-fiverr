@@ -70,3 +70,28 @@ export type Feature = {
     title: string;
     desc: string;
 };
+
+export type PopularTag = string;
+
+export type CongViec = {
+    id: string;
+    tenCongViec: string;
+    danhGia: string;
+    giaTien: string;
+    nguoiTao: string;
+    hinhAnh: string;
+    moTa: string;
+    maChiTietLoaiCongViec: string;
+    moTaNgan: string;
+    saoCongViec: string;
+}
+
+export type DSCongViecTheoTen<T> = {
+    id: string;
+    congViec: T | null;
+    tenLoaiCongViec: string;
+    tenNhomChiTietLoai: string;
+    tenChiTietLoai: string;
+    tenNguoiTao: string;
+    avatar: string;
+}

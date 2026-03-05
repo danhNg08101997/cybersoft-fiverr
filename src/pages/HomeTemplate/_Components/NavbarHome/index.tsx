@@ -1,22 +1,22 @@
-import {NavLink} from "react-router-dom";
-import {useState} from "react";
+import {Navigate, NavLink} from "react-router-dom";
+import React, {useState} from "react";
 import LoginComponent from "@pages/AuthTemplate/Login";
 import RegisterComponent from "@pages/AuthTemplate/Register";
+import type {PopularTag} from "@types";
+import type {AppDispatch, RootState} from "@store/index.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {searchJobService} from "@services/searchJob.service.ts";
 
-type Tag = string;
-
-const popularTags: Tag[] = ["Website Design", "WordPress", "Logo Design", "Dropshipping"];
+const popularTags: PopularTag[] = ["Website Design", "WordPress", "Logo Design", "Drop shipping"];
 
 function NavbarHome() {
 
-    const [searchVal, setSearchVal] = useState<string>("");
-    console.log("🚀 ~ NavbarHome ~ searchVal: ", searchVal);
-
+    const [q, setQ] = useState<string>("");
     const [isLoginModal, setIsLoginModal] = useState(false);
     const [isRegisterModal, setIsRegisterModal] = useState(false);
 
     const showLoginModal = () => {
-            setIsLoginModal(true);
+        setIsLoginModal(true);
     };
 
     const showRegisterModal = () => {
@@ -28,63 +28,80 @@ function NavbarHome() {
         setIsRegisterModal(false);
     };
 
+    const dispatch: AppDispatch = useDispatch();
+    const {loading, data} = useSelector((state: RootState) => state.searchJobReducer);
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!q) return;
+            // @ts-ignore
+        dispatch(searchJobService(q))
+    };
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
+    if(data){
+        return <Navigate to="job-list" state={data} />
+    }
+
     return (
         <div className="bg-white">
             {/* HERO */}
             <header className="relative overflow-hidden bg-[#8a2a18]">
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.07),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.06),transparent_50%)]" />
+                <div
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.07),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.06),transparent_50%)]"/>
 
                 {/* NAV */}
                 <div className="relative mx-auto max-w-7xl px-6">
                     <div className="flex items-center justify-between py-5">
-                        <div className="text-white text-3xl font-extrabold tracking-tight">
+                        <NavLink to="/" className="text-white text-3xl font-extrabold tracking-tight">
                             fiverr<span className="text-emerald-400">.</span>
-                        </div>
+                        </NavLink>
 
                         <nav className="flex items-center gap-6">
-                            <NavLink
-                                to=""
-                                className="hidden md:inline text-white/90 hover:text-white text-sm font-semibold"
+                            <span
+                                className="hidden md:inline text-white/90 hover:text-white text-sm font-semibold hover:cursor-pointer"
                                 aria-current="page"
                             >
                                 Become a Seller
-                            </NavLink>
+                            </span>
 
-                            <NavLink
-                                to=""
-                                className="text-white/90 hover:text-white text-sm font-semibold"
+                            <span
+                                className="text-white/90 hover:text-white text-sm font-semibold hover:cursor-pointer"
                                 aria-current="page"
                                 onClick={showRegisterModal}
                             >
                                 Sign In
-                            </NavLink>
-                            {isRegisterModal && <RegisterComponent isOpen={isRegisterModal} onClose={handleCancel} />}
+                            </span>
+                            {isRegisterModal && <RegisterComponent isOpen={isRegisterModal} onClose={handleCancel}/>}
 
-                            <NavLink
-                                to=""
-                                className="rounded border border-white/70 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                            <span
+                                className="rounded border border-white/70 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 hover:cursor-pointer"
                                 onClick={showLoginModal}
                             >
                                 Join
-                            </NavLink>
-                            {isLoginModal && <LoginComponent isOpen={isLoginModal} onClose={handleCancel} />}
+                            </span>
+                            {isLoginModal && <LoginComponent isOpen={isLoginModal} onClose={handleCancel}/>}
                         </nav>
                     </div>
                 </div>
 
                 {/* HERO BODY */}
                 <div className="relative mx-auto max-w-7xl px-6">
-                    <div className="grid min-h-[520px] items-center gap-10 md:grid-cols-2">
+                    <div className="grid min-h-130 items-center gap-10 md:grid-cols-2">
                         {/* LEFT */}
                         <div className="pb-14 pt-10 md:pt-0">
                             <h1 className="text-white font-extrabold leading-[1.05] text-[44px] md:text-[56px]">
                                 Find the perfect <span className="font-serif italic font-semibold">freelance</span>
-                                <br />
+                                <br/>
                                 services for your business
                             </h1>
 
                             {/* Search */}
-                            <div className="mt-8 flex w-full max-w-[680px] overflow-hidden rounded-sm bg-white shadow-sm">
+                            <form onSubmit={submit}
+                                className="mt-8 flex w-full max-w-170 overflow-hidden rounded-sm bg-white shadow-sm">
                                 <div className="flex flex-1 items-center gap-3 px-4">
                                     {/* search icon */}
                                     <svg
@@ -107,17 +124,20 @@ function NavbarHome() {
                                     </svg>
 
                                     <input
-                                        value={searchVal}
-                                        onChange={(e) => setSearchVal(e.target.value)}
-                                        placeholder='Try "building mobile app"'
+                                        value={q}
+                                        onChange={(e) => setQ(e.target.value)}
+                                        placeholder='Search for any service...'
                                         className="h-12 w-full bg-transparent text-[15px] outline-none placeholder:text-slate-400"
                                     />
                                 </div>
 
-                                <button className="h-12 bg-emerald-500 px-7 text-[15px] font-bold text-white hover:bg-emerald-600">
+                                <button
+                                    type="submit"
+                                    className="h-12 bg-emerald-500 px-7 text-[15px] font-bold text-white hover:bg-emerald-600"
+                                >
                                     Search
                                 </button>
-                            </div>
+                            </form>
 
                             {/* Popular */}
                             <div className="mt-5 flex flex-wrap items-center gap-3 text-white">
@@ -136,7 +156,7 @@ function NavbarHome() {
 
                         {/* RIGHT (full hero image like screenshot) */}
                         <div className="relative hidden md:block h-full">
-                            <div className="absolute right-0 top-0 h-full w-[520px]">
+                            <div className="absolute right-0 top-0 h-full w-130">
                                 <img
                                     src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=80"
                                     alt="Hero model"
@@ -144,7 +164,8 @@ function NavbarHome() {
                                     loading="lazy"
                                 />
                                 {/* light dark gradient for better readability */}
-                                <div className="absolute inset-0 bg-gradient-to-l from-black/15 via-transparent to-transparent" />
+                                <div
+                                    className="absolute inset-0 bg-linear-to-l from-black/15 via-transparent to-transparent"/>
 
                                 {/* Rating badge bottom-right */}
                                 <div className="absolute bottom-8 right-8 flex items-end gap-3">

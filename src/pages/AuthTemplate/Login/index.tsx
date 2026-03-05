@@ -25,7 +25,6 @@ function LoginComponent(props: AuthModalProps) {
     if (data?.user?.role === "ADMIN") {
         return <Navigate to="admin"/>
     } else if (data?.user?.role === "USER") {
-        console.log("🚀 ~ LoginComponent ~ data?.user?.role: ", data?.user?.role);
         return <Navigate to=""/>
     }
 

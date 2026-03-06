@@ -1,4 +1,4 @@
-import type {InitState, TApiResponse, User} from "@types";
+import type {InitState, RegisterPayload, TApiResponse, User} from "@types";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {apiConfig} from "@services/apiConfig.ts";
 import type {AxiosError} from "axios";
@@ -8,16 +8,24 @@ const initialState: InitState<User> = {
     loading: false,
     data: null,
     error: null,
-}
+};
 
-export const registerService = createAsyncThunk(
-    "auth/registerService",
-    async (user, {rejectWithValue}) => {
+export const registerService = createAsyncThunk<
+    User,
+    RegisterPayload,
+    { rejectValue: AxiosError<never> }
+>(
+    "auth/registerService", async (user, { rejectWithValue }) => {
         try {
             const response = await apiConfig.post<TApiResponse<User>>("auth/signup", user)
-            return response.data.content
+
+            if (!response.data?.content) {
+                throw new Error("Không nhận được dữ liệu đăng ký");
+            }
+
+            return response.data.content;
         }catch(error) {
-            return rejectWithValue(error);
+            return rejectWithValue(error as AxiosError<never>);
         }
     }
 )
@@ -25,20 +33,31 @@ export const registerService = createAsyncThunk(
 const registerSlice = createSlice({
     name:"register",
     initialState,
-    reducers:{},
-    extraReducers:(builder)=>{
-        builder.addCase(registerService.pending,(state)=>{
+    reducers: {
+        resetRegisterState: (state) => {
+            state.loading = false;
+            state.data = null;
+            state.error = null;
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(registerService.pending, (state) => {
             state.loading = true;
+            state.error = null;
+            state.data = null;
         });
-        builder.addCase(registerService.fulfilled,(state,action)=>{
+
+        builder.addCase(registerService.fulfilled, (state, action) => {
             state.loading = false;
-            state.data = action.payload as User;
-        })
-        builder.addCase(registerService.rejected, (state, action)=>{
+            state.data = action.payload;
+        });
+
+        builder.addCase(registerService.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload as AxiosError<never>
-        })
-    }
+            state.error = action.payload ?? null;
+        });
+    },
 })
 
+export const { resetRegisterState } = registerSlice.actions;
 export default registerSlice.reducer;

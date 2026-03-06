@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import type {MenuProps} from "antd";
 import {Dropdown, Menu} from "antd";
 import type {DsNhomChiTietLoai} from "@types";
@@ -7,6 +7,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {menuCongViecService} from "@services/menuCongViec.service.ts";
 
 function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
+    const handleSubItem = (e: React.FormEvent) => {
+        e.preventDefault();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        console.log("🚀 ~ handleSubItem ~ e: ", e.target?.textContent);
+
+    }
     return (
         <div className="fiverr-mega">
             <div className="fiverr-mega__inner">
@@ -20,7 +27,7 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
                                         key={it.id}
                                         href=""
                                         className={`fiverr-mega__item ${!it.tenChiTiet ? "is-link" : ""}`}
-                                        onClick={(e) => e.preventDefault()}
+                                        onClick={handleSubItem}
                                     >
                                         <span>{it.tenChiTiet}</span>
                                     </a>

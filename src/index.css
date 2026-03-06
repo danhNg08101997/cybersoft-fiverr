@@ -2,3 +2,20 @@
 @import "flowbite/src/themes/default.css";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+    background: #ffffff;
+}
+
+.hero-search-input .ant-input {
+    font-size: 16px;
+}

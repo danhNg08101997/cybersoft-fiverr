@@ -1,109 +1,135 @@
-import {Navigate, NavLink} from "react-router-dom";
-import React, {useState} from "react";
+import {NavLink, useNavigate} from "react-router-dom";
+import React, {useMemo, useState} from "react";
 import LoginComponent from "@pages/AuthTemplate/Login";
 import RegisterComponent from "@pages/AuthTemplate/Register";
 import type {PopularTag} from "@types";
-import type {AppDispatch, RootState} from "@store/index.ts";
 import {useDispatch, useSelector} from "react-redux";
-import {searchJobService} from "@services/searchJob.service.ts";
+import type {AppDispatch, RootState} from "@store/index.ts";
+import {logout} from "@services/login.service.ts";
 
-const popularTags: PopularTag[] = ["Website Design", "WordPress", "Logo Design", "Drop shipping"];
+const popularTags: PopularTag[] = [
+    "Website Design",
+    "WordPress",
+    "Logo Design",
+    "Drop shipping",
+];
 
-function NavbarHome() {
-
+export default function NavbarHome(): React.JSX.Element {
     const [q, setQ] = useState<string>("");
-    const [isLoginModal, setIsLoginModal] = useState(false);
-    const [isRegisterModal, setIsRegisterModal] = useState(false);
+    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
+    const [isRegisterModal, setIsRegisterModal] = useState<boolean>(false);
 
-    const showLoginModal = () => {
-        setIsLoginModal(true);
+    const navigate = useNavigate();
+
+    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleLogout = () => {
+        dispatch(logout());
     };
 
-    const showRegisterModal = () => {
-        setIsRegisterModal(true);
-    }
+    const trimmedQuery = useMemo(() => q.trim(), [q]);
 
-    const handleCancel = () => {
+    const showLoginModal = (): void => setIsLoginModal(true);
+    const showRegisterModal = (): void => setIsRegisterModal(true);
+
+
+    const closeAllModals = () => {
         setIsLoginModal(false);
         setIsRegisterModal(false);
     };
 
-    const dispatch: AppDispatch = useDispatch();
-    const {loading, data} = useSelector((state: RootState) => state.searchJobReducer);
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!q) return;
-            // @ts-ignore
-        dispatch(searchJobService(q))
+    const switchRegisterToLogin = () => {
+        setIsRegisterModal(false);
+        setIsLoginModal(true);
     };
 
-    if (loading) {
-        return <div>Loading...</div>
-    }
+    const redirectToJobList = (keyword: string): void => {
+        const value = keyword.trim();
+        if (!value) return;
 
-    if(data){
-        return <Navigate to="job-list" state={data} />
-    }
+        navigate(`/job-list?keyword=${encodeURIComponent(value)}`);
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        redirectToJobList(trimmedQuery);
+    };
 
     return (
         <div className="bg-white">
-            {/* HERO */}
             <header className="relative overflow-hidden bg-[#8a2a18]">
                 <div
-                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.07),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.06),transparent_50%)]"/>
+                    className="pointer-events-none absolute
+                    inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.07),transparent_45%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.06),transparent_50%)]"
+                />
 
                 {/* NAV */}
                 <div className="relative mx-auto max-w-7xl px-6">
                     <div className="flex items-center justify-between py-5">
-                        <NavLink to="/" className="text-white text-3xl font-extrabold tracking-tight">
+                        {/*Logo*/}
+                        <NavLink to="/" className="text-3xl font-extrabold tracking-tight text-white">
                             fiverr<span className="text-emerald-400">.</span>
                         </NavLink>
 
                         <nav className="flex items-center gap-6">
                             <span
-                                className="hidden md:inline text-white/90 hover:text-white text-sm font-semibold hover:cursor-pointer"
-                                aria-current="page"
-                            >
+                                className="hidden cursor-pointer text-sm font-semibold text-white/90 hover:text-white md:inline">
                                 Become a Seller
                             </span>
 
-                            <span
-                                className="text-white/90 hover:text-white text-sm font-semibold hover:cursor-pointer"
-                                aria-current="page"
-                                onClick={showRegisterModal}
+                            {/* Sign In -> Login */}
+                            {currentUser ? (
+                                <a className="text-sm font-semibold text-white hover:cursor-pointer" onClick={handleLogout}>
+                                    {currentUser.user.name} - Logout
+                                </a>
+                            ) : (<span
+                                className="cursor-pointer text-sm font-semibold text-white/90 hover:text-white"
+                                onClick={showLoginModal}
                             >
                                 Sign In
-                            </span>
-                            {isRegisterModal && <RegisterComponent isOpen={isRegisterModal} onClose={handleCancel}/>}
+                                </span>)
+                            }
 
+                            {isLoginModal && (<LoginComponent isOpen={isLoginModal} onClose={closeAllModals}/>)}
+
+                            {/* Join -> Register */}
                             <span
-                                className="rounded border border-white/70 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 hover:cursor-pointer"
-                                onClick={showLoginModal}
+                                className="cursor-pointer rounded border border-white/70 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                                onClick={showRegisterModal}
                             >
                                 Join
                             </span>
-                            {isLoginModal && <LoginComponent isOpen={isLoginModal} onClose={handleCancel}/>}
+                            {isRegisterModal && (
+                                <RegisterComponent
+                                    isOpen={isRegisterModal}
+                                    onClose={closeAllModals}
+                                    onSwitchToLogin={switchRegisterToLogin}
+                                />
+                            )}
                         </nav>
+
                     </div>
                 </div>
 
                 {/* HERO BODY */}
                 <div className="relative mx-auto max-w-7xl px-6">
-                    <div className="grid min-h-130 items-center gap-10 md:grid-cols-2">
+                    <div className="grid min-h-162.5 items-center gap-10 md:grid-cols-2">
                         {/* LEFT */}
                         <div className="pb-14 pt-10 md:pt-0">
-                            <h1 className="text-white font-extrabold leading-[1.05] text-[44px] md:text-[56px]">
-                                Find the perfect <span className="font-serif italic font-semibold">freelance</span>
+                            <h1 className="text-[44px] font-extrabold leading-[1.05] text-white md:text-[56px]">
+                                Find the perfect{" "}
+                                <span className="font-serif italic font-semibold">freelance</span>
                                 <br/>
                                 services for your business
                             </h1>
 
-                            {/* Search */}
-                            <form onSubmit={submit}
-                                className="mt-8 flex w-full max-w-170 overflow-hidden rounded-sm bg-white shadow-sm">
+                            {/* SEARCH */}
+                            <form
+                                onSubmit={handleSubmit}
+                                className="mt-8 flex w-full max-w-170 overflow-hidden rounded-sm bg-white shadow-sm"
+                            >
                                 <div className="flex flex-1 items-center gap-3 px-4">
-                                    {/* search icon */}
                                     <svg
                                         className="h-5 w-5 text-slate-400"
                                         viewBox="0 0 24 24"
@@ -126,7 +152,7 @@ function NavbarHome() {
                                     <input
                                         value={q}
                                         onChange={(e) => setQ(e.target.value)}
-                                        placeholder='Search for any service...'
+                                        placeholder='Try "building mobile app"'
                                         className="h-12 w-full bg-transparent text-[15px] outline-none placeholder:text-slate-400"
                                     />
                                 </div>
@@ -139,23 +165,25 @@ function NavbarHome() {
                                 </button>
                             </form>
 
-                            {/* Popular */}
+                            {/* POPULAR TAGS */}
                             <div className="mt-5 flex flex-wrap items-center gap-3 text-white">
                                 <span className="text-sm font-semibold opacity-90">Popular:</span>
 
-                                {popularTags.map((t) => (
+                                {popularTags.map((tag) => (
                                     <button
-                                        key={t}
+                                        key={tag}
+                                        type="button"
+                                        onClick={() => redirectToJobList(tag)}
                                         className="rounded-full border border-white/55 px-4 py-1.5 text-sm font-semibold text-white/95 hover:bg-white/10"
                                     >
-                                        {t}
+                                        {tag}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
-                        {/* RIGHT (full hero image like screenshot) */}
-                        <div className="relative hidden md:block h-full">
+                        {/* RIGHT */}
+                        <div className="relative hidden h-full md:block">
                             <div className="absolute right-0 top-0 h-full w-130">
                                 <img
                                     src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=80"
@@ -163,17 +191,15 @@ function NavbarHome() {
                                     className="h-full w-full object-cover"
                                     loading="lazy"
                                 />
-                                {/* light dark gradient for better readability */}
                                 <div
                                     className="absolute inset-0 bg-linear-to-l from-black/15 via-transparent to-transparent"/>
 
-                                {/* Rating badge bottom-right */}
                                 <div className="absolute bottom-8 right-8 flex items-end gap-3">
                                     <div className="text-right text-white drop-shadow">
                                         <div className="flex justify-end gap-1 text-yellow-400">
-                                            {"★★★★★".split("").map((s, i) => (
-                                                <span key={i} className="text-sm">
-                          {s}
+                                            {"★★★★★".split("").map((star, index) => (
+                                                <span key={index} className="text-sm">
+                          {star}
                         </span>
                                             ))}
                                         </div>
@@ -184,12 +210,10 @@ function NavbarHome() {
                                 </div>
                             </div>
                         </div>
+                        {/* END RIGHT */}
                     </div>
                 </div>
             </header>
         </div>
-
     );
 }
-
-export default NavbarHome;

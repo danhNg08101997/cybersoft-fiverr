@@ -1,6 +1,7 @@
 import type {AxiosError} from "axios";
 import * as React from "react";
 import type {JSX} from "react";
+import { type Dayjs } from "dayjs";
 
 export type InitState<T> = {
     loading: boolean;
@@ -20,6 +21,23 @@ export type TApiResponse<T> = {
     content?: T;
 }
 
+export type LoginPayload = {
+    email: string;
+    password: string;
+};
+
+export type RegisterPayload = {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    birthday?: string;
+    gender?: string;
+    role: "USER" | "ADMIN";
+    skill?: string[];
+    certification?: string[];
+};
+
 export type LoginResponse = {
     token: string;
     user: User;
@@ -28,16 +46,30 @@ export type LoginResponse = {
 export type AuthModalProps = {
     isOpen: boolean;
     onClose?: () => void;
+    onSwitchToLogin?: () => void;
 }
 
+export type RegisterFormValues = {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    phone?: string;
+    birthday?: Dayjs;
+    gender?: string;
+    skill?: string;
+    certification?: string;
+};
+
 export type User = {
+    id?: number;
     name?: string;
-    email?: string;
-    password?: string;
+    email: string;
+    password: string;
     phone?: string;
     birthday?: string;
     gender?: string;
-    role?: string;
+    role: "ADMIN" | "USER";
     skill?: Array<string>;
     certification?: Array<string>;
 }
@@ -86,9 +118,9 @@ export type CongViec = {
     saoCongViec: string;
 }
 
-export type DSCongViecTheoTen<T> = {
+export type DSCongViecTheoTen = {
     id: string;
-    congViec: T | null;
+    congViec: CongViec[];
     tenLoaiCongViec: string;
     tenNhomChiTietLoai: string;
     tenChiTietLoai: string;

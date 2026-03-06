@@ -1,22 +1,25 @@
-import type {CongViec, DSCongViecTheoTen, InitState, TApiResponse} from "@types";
+import type {DSCongViecTheoTen, InitState, TApiResponse} from "@types";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {apiConfig} from "@services/apiConfig.ts";
 import type {AxiosError} from "axios";
 
-const initialState: InitState<DSCongViecTheoTen<CongViec>> = {
+const initialState: InitState<DSCongViecTheoTen[]> = {
     loading: false,
     data: null,
     error: null,
 }
 
 export const searchJobService = createAsyncThunk(
-    "search/searchJob",
-    async (jobName, {rejectWithValue}) => {
+    "searchJob/searchJobService",
+    async (tenCongViec:string , thunkAPI) => {
         try{
-            const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen<CongViec>>>(`cong-viec/lay-danh-sach-cong-viec-theo-ten/${jobName}`);
-            return response.data.content
+            const keyword = encodeURIComponent(tenCongViec.trim());
+
+            const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen[]>>(`cong-viec/lay-danh-sach-cong-viec-theo-ten/${keyword}`);
+
+            return response.data.content ?? response.data;
         }catch (error){
-            return rejectWithValue(error);
+            return thunkAPI.rejectWithValue( error || "Không thể tải danh sách công việc" );
         }
     }
 )
@@ -31,7 +34,7 @@ const searchJobSlice = createSlice({
         })
         builder.addCase(searchJobService.fulfilled,(state,action)=>{
             state.loading = false;
-            state.data = action.payload as DSCongViecTheoTen<CongViec>
+            state.data = action.payload as DSCongViecTheoTen[]
         })
         builder.addCase(searchJobService.rejected,(state, action)=>{
             state.loading = false;

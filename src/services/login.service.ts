@@ -1,30 +1,37 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import type {InitState, LoginResponse, TApiResponse} from "@types";
+import type {InitState, LoginPayload, LoginResponse, TApiResponse} from "@types";
 import {apiConfig} from "./apiConfig.ts";
 import type {AxiosError} from "axios";
 
-const token = localStorage.getItem("USER_LOGIN") ?? ''
-
-const data = token ? JSON.parse(token) : null;
+const rawUser = localStorage.getItem("USER_LOGIN");
+const persistedData: LoginResponse | null = rawUser ? JSON.parse(rawUser) : null;
 
 const initialState: InitState<LoginResponse> = {
     loading: false,
-    data,
+    data: persistedData,
     error: null,
 }
 
-export const loginService = createAsyncThunk(
+export const loginService = createAsyncThunk<
+    LoginResponse,
+    LoginPayload,
+    { rejectValue: AxiosError<never> }
+>(
     "auth/loginService",
-    async (user, {rejectWithValue}) => {
+    async (user, { rejectWithValue }) => {
 try {
     const response = await apiConfig.post<TApiResponse<LoginResponse>>("auth/signin", user);
 
-    const userInfoString = JSON.stringify(response.data?.content?.token)
-    localStorage.setItem("USER_LOGIN", userInfoString);
+    const loginData = response.data?.content;
 
-    return response.data.content
+    if (!loginData) {
+        throw new Error("Không nhận được dữ liệu đăng nhập");
+    }
+    localStorage.setItem("USER_LOGIN", JSON.stringify(loginData));
+
+    return loginData;
 }catch (error){
-    return rejectWithValue(error);
+    return rejectWithValue(error as AxiosError<never>);
 }
     }
 )
@@ -32,20 +39,29 @@ try {
 const loginSlice = createSlice({
     name:"login",
     initialState,
-    reducers:{},
+    reducers:{
+        logout: (state) => {
+            state.data = null;
+            state.error = null;
+            state.loading = false;
+            localStorage.removeItem("USER_LOGIN");
+        },
+    },
     extraReducers:(builder) =>{
         builder.addCase(loginService.pending, (state) => {
             state.loading = true;
+            state.error = null;
         });
         builder.addCase(loginService.fulfilled, (state, action) => {
             state.loading = false;
-            state.data = action.payload as LoginResponse;
+            state.data = action.payload;
         });
         builder.addCase(loginService.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload as AxiosError<never>
+            state.error = action.payload ?? null;
         });
     }
 })
 
+export const { logout } = loginSlice.actions;
 export default loginSlice.reducer;

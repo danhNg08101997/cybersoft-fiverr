@@ -28,8 +28,6 @@ function LoginComponent(props: AuthModalProps): React.JSX.Element {
         }
         if (data.user.role === "ADMIN") {
             navigate("/admin");
-        } else {
-            navigate("/");
         }
     }, [data, navigate, onClose]);
 
@@ -40,7 +38,7 @@ function LoginComponent(props: AuthModalProps): React.JSX.Element {
             footer={null}
             centered
             width={920}
-            destroyOnClose
+            destroyOnHidden
             className="[&_.ant-modal-content]:overflow-hidden [&_.ant-modal-content]:rounded-2xl [&_.ant-modal-content]:p-0"
         >
             <div className="grid min-h-140 grid-cols-1 md:grid-cols-2">

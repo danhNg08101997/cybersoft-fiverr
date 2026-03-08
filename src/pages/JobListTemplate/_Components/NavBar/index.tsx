@@ -1,115 +1,129 @@
-import React, {useState} from 'react';
-import {NavLink} from "react-router-dom";
+import React, {useEffect, useMemo, useState} from 'react';
+import {Link, useNavigate, useSearchParams} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "@store/index.ts";
+import {logout} from "@services/login.service.ts";
+import {searchJobService} from "@services/searchJob.service.ts";
+import LoginComponent from "@pages/AuthTemplate/Login";
+import RegisterComponent from "@pages/AuthTemplate/Register";
 
 
-function NavBarJobList() {
+export default function JobListNavbar() {
+    const [searchParams] = useSearchParams();
+    const [keyword, setKeyword] = useState<string>((searchParams.get("keyword") ?? "").trim());
+    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
+    const [isRegisterModal, setIsRegisterModal] = useState<boolean>(false);
 
-    const [q, setQ] = useState<string>("");
 
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
+    // const navigate = useNavigate();
+
+    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+    const { loading, data: jobList, error } = useSelector(
+        (state: RootState) => state.searchJobReducer
+    );
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleLogout = () => {
+        dispatch(logout());
     };
 
+    const trimmedQuery = useMemo(() => keyword.trim(), [keyword]);
+
+    const showLoginModal = (): void => setIsLoginModal(true);
+    const showRegisterModal = (): void => setIsRegisterModal(true);
+
+
+    const closeAllModals = () => {
+        setIsLoginModal(false);
+        setIsRegisterModal(false);
+    };
+
+    const switchRegisterToLogin = () => {
+        setIsRegisterModal(false);
+        setIsLoginModal(true);
+    };
+
+
+
+    const redirectToJobList = (keyword: string): void => {
+        const value = keyword.trim();
+        if (!value) return;
+        dispatch(searchJobService(keyword));
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        redirectToJobList(trimmedQuery);
+    };
+
+    useEffect(() => {
+        if (!keyword) return;
+        dispatch(searchJobService(keyword));
+    }, [dispatch]);
+
     return (
-        <header className="sticky top-0 z-50 bg-white">
-            <div className="border-b border-slate-100">
-                <div className="mx-auto max-w-7xl px-6">
-                    <div className="flex h-18 items-center justify-between gap-6">
-                        {/* LEFT: logo */}
-                        <NavLink to="/" className="flex items-center text-3xl font-extrabold text-slate-800">
-                            fiverr<span className="text-emerald-500">.</span>
-                        </NavLink>
+        <header className="job-navbar">
+            <div className="job-navbar__container">
+                <div className="job-navbar__left">
+                    <Link to="/" className="job-navbar__logo">
+                        fiverr<span>.</span>
+                    </Link>
+                </div>
 
-                        {/* CENTER: search */}
-                        <form onSubmit={submit} className="hidden flex-1 md:flex">
-                            <div className="flex w-full max-w-155 items-center overflow-hidden rounded border border-slate-200 bg-white">
-                                <div className="flex flex-1 items-center gap-2 px-3">
-                                    <svg viewBox="0 0 24 24" className="h-5 w-5 text-slate-400" fill="none">
-                                        <path
-                                            d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        />
-                                        <path
-                                            d="M16.5 16.5 21 21"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                        />
-                                    </svg>
+                <form className="job-navbar__center" onSubmit={handleSubmit}>
+                    <div className="job-navbar__search">
+                        <input
+                            type="text"
+                            placeholder="What service are you looking for today?"
+                            value={keyword}
+                            onChange={(e) => setKeyword(e.target.value)}
+                        />
+                        <button type="submit">Search</button>
+                    </div>
+                </form>
 
-                                    <input
-                                        value={q}
-                                        onChange={(e) => setQ(e.target.value)}
-                                        placeholder='what service are you looking for today?'
-                                        className="h-11 w-full bg-transparent text-[15px] text-slate-700 outline-none placeholder:text-slate-400"
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    className="h-11 bg-emerald-500 px-6 text-[14px] font-bold text-white hover:bg-emerald-600"
-                                >
-                                    Search
-                                </button>
-                            </div>
-                        </form>
-
-                        {/* RIGHT: actions */}
-                        <nav className="flex items-center gap-6">
-                            <a href="#" className="hidden md:inline text-[14px] font-semibold text-slate-500 hover:text-slate-800">
-                                Become a Seller
-                            </a>
-                            <a href="#" className="text-[14px] font-semibold text-slate-500 hover:text-slate-800">
+                <div className="job-navbar__right">
+                    <Link to="/become-a-seller" className="job-navbar__link">
+                        Become a Seller
+                    </Link>
+                    {!currentUser ? (
+                        <>
+                            <button
+                                type="button"
+                                className="job-navbar__link"
+                                onClick={showLoginModal}
+                            >
                                 Sign In
-                            </a>
-
-                            {/* Join: green outline like screenshot */}
-                            <a
-                                href="#"
-                                className="rounded border border-emerald-500 px-4 py-2 text-[14px] font-bold text-emerald-600 hover:bg-emerald-50"
+                            </button>
+                            {/* Join */}
+                            <button
+                                type="button"
+                                className="job-navbar__join"
+                                onClick={showRegisterModal}
                             >
                                 Join
-                            </a>
-                        </nav>
-                    </div>
-
-                    {/* MOBILE search (optional) */}
-                    <form onSubmit={submit} className="pb-4 md:hidden">
-                        <div className="flex w-full items-center overflow-hidden rounded border border-slate-200 bg-white">
-                            <div className="flex flex-1 items-center gap-2 px-3">
-                                <svg viewBox="0 0 24 24" className="h-5 w-5 text-slate-400" fill="none">
-                                    <path
-                                        d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                    />
-                                    <path
-                                        d="M16.5 16.5 21 21"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                                <input
-                                    value={q}
-                                    onChange={(e) => setQ(e.target.value)}
-                                    placeholder="Search"
-                                    className="h-11 w-full bg-transparent text-[15px] text-slate-700 outline-none placeholder:text-slate-400"
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                className="h-11 bg-emerald-500 px-5 text-[14px] font-bold text-white hover:bg-emerald-600"
-                            >
-                                Search
                             </button>
-                        </div>
-                    </form>
+                        </>
+                    ):(
+                        <>
+                        <span className="job-navbar__link hover:cursor-pointer">
+                    {currentUser.user.name}
+                </span>
+
+                <button
+                    type="button"
+                    className="job-navbar__link hover:cursor-pointer"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </button>
+            </>
+                        )}
+
+                    {isLoginModal && (<LoginComponent isOpen={isLoginModal} onClose={closeAllModals}/>)}
+                    {isRegisterModal && ( <RegisterComponent isOpen={isRegisterModal} onClose={closeAllModals} onSwitchToLogin={switchRegisterToLogin} /> )}
                 </div>
             </div>
         </header>
     );
 }
-
-export default NavBarJobList;

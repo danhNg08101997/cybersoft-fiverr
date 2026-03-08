@@ -1,0 +1,152 @@
+.job-navbar {
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #e4e5e7;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.job-navbar__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.job-navbar__left {
+    flex: 0 0 auto;
+}
+
+.job-navbar__logo {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+    color: #404145;
+    text-decoration: none;
+    letter-spacing: -1px;
+}
+
+.job-navbar__logo span {
+    color: #1dbf73;
+}
+
+.job-navbar__center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.job-navbar__search {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c5c6c9;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.job-navbar__search input {
+    flex: 1;
+    height: 42px;
+    border: none;
+    outline: none;
+    padding: 0 14px;
+    font-size: 15px;
+    color: #404145;
+}
+
+.job-navbar__search input::placeholder {
+    color: #9b9da5;
+}
+
+.job-navbar__search button {
+    height: 42px;
+    padding: 0 20px;
+    border: none;
+    background-color: #1dbf73;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.job-navbar__search button:hover {
+    background-color: #19a463;
+}
+
+.job-navbar__right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 0 0 auto;
+}
+
+.job-navbar__link {
+    text-decoration: none;
+    color: #62646a;
+    font-size: 15px;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.job-navbar__link:hover {
+    color: #1dbf73;
+}
+
+.job-navbar__join {
+    text-decoration: none;
+    border: 1px solid #1dbf73;
+    color: #1dbf73;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.job-navbar__join:hover {
+    background-color: #1dbf73;
+    color: #fff;
+}
+
+@media (max-width: 992px) {
+    .job-navbar__container {
+        flex-wrap: wrap;
+        padding: 14px 20px;
+    }
+
+    .job-navbar__center {
+        order: 3;
+        width: 100%;
+    }
+
+    .job-navbar__search {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .job-navbar__right {
+        gap: 12px;
+    }
+
+    .job-navbar__link {
+        font-size: 14px;
+    }
+
+    .job-navbar__join {
+        padding: 7px 14px;
+        font-size: 14px;
+    }
+
+    .job-navbar__logo {
+        font-size: 30px;
+    }
+}

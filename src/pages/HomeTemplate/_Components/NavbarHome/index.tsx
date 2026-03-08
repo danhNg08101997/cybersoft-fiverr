@@ -78,35 +78,44 @@ export default function NavbarHome(): React.JSX.Element {
                                 Become a Seller
                             </span>
 
-                            {/* Sign In -> Login */}
-                            {currentUser ? (
-                                <a className="text-sm font-semibold text-white hover:cursor-pointer" onClick={handleLogout}>
-                                    {currentUser.user.name} - Logout
-                                </a>
-                            ) : (<span
-                                className="cursor-pointer text-sm font-semibold text-white/90 hover:text-white"
-                                onClick={showLoginModal}
-                            >
-                                Sign In
-                                </span>)
-                            }
+                            {!currentUser ? (
+                                <>
+                                    {/* Sign In */}
+                                    <button
+                                        type="button"
+                                        className="cursor-pointer text-sm font-semibold text-white/90 hover:text-white"
+                                        onClick={showLoginModal}
+                                    >
+                                        Sign In
+                                    </button>
+
+                                    {/* Join */}
+                                    <button
+                                        type="button"
+                                        className="cursor-pointer rounded border border-white/70 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                                        onClick={showRegisterModal}
+                                    >
+                                        Join
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="text-sm font-semibold text-white">
+                                        {currentUser.user.name}
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        className="text-sm font-semibold text-white/90 hover:text-white"
+                                        onClick={handleLogout}
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            )}
 
                             {isLoginModal && (<LoginComponent isOpen={isLoginModal} onClose={closeAllModals}/>)}
-
-                            {/* Join -> Register */}
-                            <span
-                                className="cursor-pointer rounded border border-white/70 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
-                                onClick={showRegisterModal}
-                            >
-                                Join
-                            </span>
-                            {isRegisterModal && (
-                                <RegisterComponent
-                                    isOpen={isRegisterModal}
-                                    onClose={closeAllModals}
-                                    onSwitchToLogin={switchRegisterToLogin}
-                                />
-                            )}
+                            {isRegisterModal && ( <RegisterComponent isOpen={isRegisterModal} onClose={closeAllModals} onSwitchToLogin={switchRegisterToLogin} /> )}
                         </nav>
 
                     </div>

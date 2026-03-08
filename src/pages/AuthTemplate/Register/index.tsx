@@ -79,7 +79,7 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
             onCancel={handleCancel}
             footer={null}
             centered
-            destroyOnClose
+            destroyOnHidden
             width={980}
             className="[&_.ant-modal-content]:overflow-hidden [&_.ant-modal-content]:rounded-3xl [&_.ant-modal-content]:p-0"
         >

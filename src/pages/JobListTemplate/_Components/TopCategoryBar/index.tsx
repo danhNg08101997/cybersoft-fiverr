@@ -1,17 +1,18 @@
-import React, {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import type {MenuProps} from "antd";
 import {Dropdown, Menu} from "antd";
 import type {DsNhomChiTietLoai} from "@types";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {menuCongViecService} from "@services/menuCongViec.service.ts";
+import {useNavigate} from "react-router-dom";
 
 function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
-    const handleSubItem = (e: React.FormEvent) => {
-        e.preventDefault();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        console.log("🚀 ~ handleSubItem ~ e: ", e.target?.textContent);
+
+    const navigate = useNavigate();
+
+    const handleGoToDetailType = (maLoaiCongviec:number) => {
+        navigate(`/loai-cong-viec/${maLoaiCongviec}`);
 
     }
     return (
@@ -27,7 +28,7 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
                                         key={it.id}
                                         href=""
                                         className={`fiverr-mega__item ${!it.tenChiTiet ? "is-link" : ""}`}
-                                        onClick={handleSubItem}
+                                        onClick={()=>handleGoToDetailType(g.maLoaiCongviec)}
                                     >
                                         <span>{it.tenChiTiet}</span>
                                     </a>
@@ -51,7 +52,6 @@ export default function TopCategoryBar() {
     }, [])
 
 
-    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     const items: MenuProps["items"] = useMemo(() => {
         return data?.map((n) => {
             const labelNode = (<span className="fiverr-topnav__label">{n.tenLoaiCongViec}</span>);

@@ -14,7 +14,6 @@ export const menuCongViecService = createAsyncThunk(
     async (__, {rejectWithValue}) => {
         try {
             const response = await apiConfig.get<TApiResponse<MenuCongViec[]>>("cong-viec/lay-menu-loai-cong-viec");
-            console.log("🚀 ~  ~ response: ", response);
             return response.data.content;
         }catch (error){
             return rejectWithValue(error);

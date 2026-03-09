@@ -11,8 +11,9 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
 
     const navigate = useNavigate();
 
-    const handleGoToDetailType = (maLoaiCongviec:number) => {
-        navigate(`/loai-cong-viec/${maLoaiCongviec}`);
+    const handleGoToDetailType = (maChiTietLoai:number) => {
+        // navigate(`/loai-cong-viec?jobKind=${encodeURIComponent(maChiTietLoai)}`);
+        navigate(`/job-list?jobKind=${encodeURIComponent(maChiTietLoai)}`);
 
     }
     return (

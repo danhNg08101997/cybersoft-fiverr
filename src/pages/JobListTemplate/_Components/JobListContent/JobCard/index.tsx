@@ -1,0 +1,97 @@
+import type {DSCongViecTheoTen} from "@types";
+import {useState} from "react";
+
+type CongViecProps = {
+    job: DSCongViecTheoTen;
+};
+
+export default function JobCard({ job }: CongViecProps) {
+    const [random] = useState(() => Math.floor(Math.random() * 2) + 1);
+    return (
+        <>
+                <div
+                    key={job.congViec.id}
+                    className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white transition hover:shadow-md"
+                >
+                    {/* ảnh */}
+                    <div className="aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                        <img
+                            src={job.congViec.hinhAnh}
+                            alt={job.congViec.tenCongViec}
+                            className="h-full w-full object-cover"
+                        />
+                    </div>
+
+                    {/* nội dung */}
+                    <div className="p-4">
+                        {/* seller */}
+                        <div className="mb-3 flex items-center gap-3">
+                            <img
+                                src={job.congViec.hinhAnh}
+                                alt={job.congViec.tenCongViec}
+                                className="h-8 w-8 rounded-full object-cover"
+                            />
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold text-gray-800">
+                                    {job.congViec.nguoiTao}
+                                </p>
+                                <p className="text-sm text-gray-400">
+                                    {`Level ${random} Seller`}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* title */}
+                        <h3 className="mb-3 line-clamp-2 min-h-[56px] text-[17px] leading-7 text-gray-700">
+                            {job.congViec.tenCongViec}
+                        </h3>
+
+                        {/* rating */}
+                        <div className="mb-4 flex items-center gap-1 text-sm">
+                            <svg
+                                className="h-4 w-4 fill-[#ffb33e]"
+                                viewBox="0 0 20 20"
+                                aria-hidden="true"
+                            >
+                                <path d="M10 1.5l2.6 5.26 5.81.85-4.2 4.1.99 5.79L10 14.77 4.8 17.5l.99-5.79-4.2-4.1 5.81-.85L10 1.5z" />
+                            </svg>
+
+                            <span className="font-semibold text-[#ffb33e]">
+                {job.congViec.saoCongViec?.toFixed(1) || "5.0"}
+              </span>
+
+                            <span className="text-gray-400">
+                ({job.congViec.danhGia || 0})
+              </span>
+                        </div>
+                    </div>
+
+                    {/* footer */}
+                    <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
+                        <button
+                            type="button"
+                            className="text-gray-300 hover:text-gray-500"
+                        >
+                            <svg
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                            >
+                                <path d="M10 17.25l-1.45-1.32C3.4 11.36 0 8.28 0 4.5 0 2.01 2.01 0 4.5 0c1.74 0 3.41.81 4.5 2.09C10.09.81 11.76 0 13.5 0 15.99 0 18 2.01 18 4.5c0 3.78-3.4 6.86-8.55 11.43L10 17.25z" />
+                            </svg>
+                        </button>
+
+                        <div className="text-right">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                Starting at
+                            </p>
+                            <p className="text-[28px] font-medium text-gray-500">
+                                ${job.congViec.giaTien}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+        </>
+    );
+}

@@ -16,7 +16,16 @@ const routes: RouteType[] = [
     {
         path:"job-list",
         element: lazy(() => import("@pages/JobListTemplate")),
-        nested: []
+        nested: [
+
+        ]
+    },
+    {
+        path:"loai-cong-viec",
+        element: lazy(()=>import("@pages/JobKindTemplate")),
+        nested: [
+
+        ]
     },
     {
         path: "admin",

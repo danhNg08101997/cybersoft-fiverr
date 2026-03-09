@@ -106,21 +106,21 @@ export type Feature = {
 export type PopularTag = string;
 
 export type CongViec = {
-    id: string;
+    id: number;
     tenCongViec: string;
-    danhGia: string;
-    giaTien: string;
-    nguoiTao: string;
+    danhGia: number;
+    giaTien: number;
+    nguoiTao: number;
     hinhAnh: string;
     moTa: string;
-    maChiTietLoaiCongViec: string;
+    maChiTietLoaiCongViec: number;
     moTaNgan: string;
-    saoCongViec: string;
+    saoCongViec: number;
 }
 
 export type DSCongViecTheoTen = {
-    id: string;
-    congViec: CongViec[];
+    id: number;
+    congViec: CongViec;
     tenLoaiCongViec: string;
     tenNhomChiTietLoai: string;
     tenChiTietLoai: string;

@@ -3,6 +3,7 @@ import loginReducer from '@services/login.service.ts'
 import registerReducer from '@services/register.service.ts'
 import searchJobReducer from '@services/searchJob.service.ts'
 import menuCongViecReducer from '@services/menuCongViec.service.ts'
+import layChiTietLoaiCongViecReducer from '@services/layChiTietLoaiCongViec.service.ts'
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         registerReducer,
         searchJobReducer,
         menuCongViecReducer,
+        layChiTietLoaiCongViecReducer,
     },
 })
 

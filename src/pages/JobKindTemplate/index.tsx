@@ -1,22 +1,23 @@
-import React, {useState} from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import JobListNavbar from "@pages/JobListTemplate/_Components/NavBar";
+import {useState} from "react";
 import TopCategoryBar from "@pages/JobListTemplate/_Components/TopCategoryBar";
-import JobSearchHeader from "@pages/JobListTemplate/_Components/JobSearchHeader";
-import JobListContent from "@pages/JobListTemplate/_Components/JobListContent";
-import {useSearchParams} from "react-router-dom";
-import FooterHome from "@components/Footer";
 
-export default function JobList(): React.JSX.Element {
+function JobKindTemplate() {
+
+    const navigate = useNavigate();
+
     const [searchParams] = useSearchParams();
+
+    const jobKind = searchParams.get("jobKind") ?? "".trim()
+    console.log("🚀 ~ JobKindTemplate ~ jobKind: ", jobKind);
+
     // giá trị đang gõ trong ô search
     const [inputValue, setInputValue] = useState<string>(searchParams.get("keyword") ?? "".trim());
-    // giá trị đã bấm Search để truyền sang JobListContent
-    const [keyword, setKeyword] = useState("");
 
     const handleSearch = (value: string) => {
-        setKeyword(value.trim());
+        navigate(`/job-list?keyword=${value.trim()}`);
     };
-
     return (
         <div className="min-h-screen bg-white">
             <JobListNavbar
@@ -25,9 +26,9 @@ export default function JobList(): React.JSX.Element {
                 onSearch={handleSearch}
             />
             <TopCategoryBar/>
-            <JobSearchHeader/>
-            <JobListContent keyword={keyword} inputValue = {inputValue}/>
-            <FooterHome/>
+
         </div>
     );
 }
+
+export default JobKindTemplate;

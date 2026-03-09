@@ -1,40 +1,53 @@
-import { Alert, Button, Form, Input, Modal } from "antd";
-import type { FormProps } from "antd";
-import type { AuthModalProps, LoginPayload } from "@types";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@store/index";
-import { loginService } from "@services/login.service";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import type {FormProps} from "antd";
+import {Alert, Button, Form, Input, Modal} from "antd";
+import type {AuthModalProps, LoginPayload} from "@types";
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "@store/index";
+import {loginService, resetLoginState} from "@services/login.service";
+import React from "react";
+import {useNavigate} from "react-router-dom";
 
 function LoginComponent(props: AuthModalProps): React.JSX.Element {
-    const { isOpen, onClose } = props;
+    const { isOpen, onClose, onSwitchToRegister } = props;
+
+    const [form] = Form.useForm<LoginPayload>();
 
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const { loading, data, error } = useSelector(
+    const { loading, error } = useSelector(
         (state: RootState) => state.loginReducer
     );
 
-    const onSubmit: FormProps<LoginPayload>["onFinish"] = (values) => {
-        dispatch(loginService(values));
+    const onSubmit: FormProps<LoginPayload>["onFinish"] = async  (values) => {
+        try {
+            const result = await dispatch(loginService({
+                ...values,
+                email: values.email.trim().toLowerCase(),
+            })).unwrap();
+
+            form.resetFields();
+            dispatch(resetLoginState());
+            onClose?.();
+
+            if (result.user.role === "ADMIN") {
+                navigate("/admin");
+            }
+        } catch {
+            // lỗi đã được lưu ở redux state
+        }
     };
 
-    useEffect(() => {
-        if (!data?.user?.role) return;
-        if (onClose) {
-            onClose();
-        }
-        if (data.user.role === "ADMIN") {
-            navigate("/admin");
-        }
-    }, [data, navigate, onClose]);
+    const handleCancel = () => {
+        form.resetFields();
+        dispatch(resetLoginState());
+        onClose?.();
+    };
 
     return (
         <Modal
             open={isOpen}
-            onCancel={onClose}
+            onCancel={handleCancel}
             footer={null}
             centered
             width={920}
@@ -60,13 +73,12 @@ function LoginComponent(props: AuthModalProps): React.JSX.Element {
                                 showIcon
                                 className="mb-5"
                                 message="Đăng nhập thất bại"
-                                description={
-                                    error?.message || "Vui lòng kiểm tra lại email hoặc mật khẩu"
-                                }
+                                description={error.message}
                             />
                         )}
 
                         <Form<LoginPayload>
+                            form={form}
                             layout="vertical"
                             onFinish={onSubmit}
                             autoComplete="off"
@@ -84,6 +96,7 @@ function LoginComponent(props: AuthModalProps): React.JSX.Element {
                                 <Input
                                     placeholder="name@example.com"
                                     className="h-12 rounded-xl"
+                                    autoComplete="email"
                                 />
                             </Form.Item>
 
@@ -95,6 +108,7 @@ function LoginComponent(props: AuthModalProps): React.JSX.Element {
                                 <Input.Password
                                     placeholder="Enter your password"
                                     className="h-12 rounded-xl"
+                                    autoComplete="current-password"
                                 />
                             </Form.Item>
 
@@ -124,9 +138,12 @@ function LoginComponent(props: AuthModalProps): React.JSX.Element {
 
                         <div className="mt-6 text-center text-sm text-slate-500">
                             Don&apos;t have an account?{" "}
-                            <span className="cursor-pointer font-semibold text-emerald-600 hover:text-emerald-700">
+                            <button type="button" className="cursor-pointer font-semibold text-emerald-600 hover:text-emerald-700"  onClick={() => {
+                                handleCancel();
+                                onSwitchToRegister?.();
+                            }}>
                 Join now
-              </span>
+              </button>
                         </div>
                     </div>
                 </div>

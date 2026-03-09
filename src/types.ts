@@ -1,12 +1,16 @@
-import type {AxiosError} from "axios";
-import * as React from "react";
 import type {JSX} from "react";
-import { type Dayjs } from "dayjs";
+import * as React from "react";
+import {type Dayjs} from "dayjs";
+
+export type AppError = {
+    message: string;
+    statusCode?: number;
+};
 
 export type InitState<T> = {
     loading: boolean;
     data: T | null;
-    error: AxiosError<never> | null;
+    error: AppError | null;
 }
 
 export type RouteType = {
@@ -47,6 +51,7 @@ export type AuthModalProps = {
     isOpen: boolean;
     onClose?: () => void;
     onSwitchToLogin?: () => void;
+    onSwitchToRegister?: () => void;
 }
 
 export type RegisterFormValues = {
@@ -57,8 +62,8 @@ export type RegisterFormValues = {
     phone?: string;
     birthday?: Dayjs;
     gender?: string;
-    skill?: string;
-    certification?: string;
+    skill?: string[];
+    certification?: string[];
 };
 
 export type User = {

@@ -8,9 +8,13 @@ const filterButtons = [
     "Delivery Time",
 ];
 
-const JobSearchHeader = () => {
+type JobSearchHeaderProps = {
+    getLength: number;
+}
+
+const JobSearchHeader = ({getLength}:JobSearchHeaderProps) => {
     const [searchParams] = useSearchParams();
-    const keyword = searchParams.get("keyword") ?? "".trim()
+    const keyword = searchParams.has("keyword") ? searchParams.get("keyword") ?? "".trim() : searchParams.get("jobKind") ?? "".trim()
     return (
         <section className="w-full border-t border-gray-200 bg-white">
             <div className="mx-auto max-w-[1400px] px-3 py-3 lg:px-8">
@@ -61,7 +65,7 @@ const JobSearchHeader = () => {
                 {/* Bottom row */}
                 <div className="mt-6 flex flex-col gap-3 border-t border-transparent pt-2 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-[15px] font-semibold text-gray-500">
-                        24,563 services available
+                        {`${getLength} services available`}
                     </p>
 
                     <button

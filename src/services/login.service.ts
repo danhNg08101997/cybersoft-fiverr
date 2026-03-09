@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import type {InitState, LoginPayload, LoginResponse, TApiResponse} from "@types";
+import type {AppError, InitState, LoginPayload, LoginResponse, TApiResponse} from "@types";
 import {apiConfig} from "./apiConfig.ts";
-import type {AxiosError} from "axios";
+import {normalizeApiError} from "../utils/normalizeApiError.ts";
 
 const rawUser = localStorage.getItem("USER_LOGIN");
 const persistedData: LoginResponse | null = rawUser ? JSON.parse(rawUser) : null;
@@ -15,7 +15,7 @@ const initialState: InitState<LoginResponse> = {
 export const loginService = createAsyncThunk<
     LoginResponse,
     LoginPayload,
-    { rejectValue: AxiosError<never> }
+    { rejectValue: AppError  }
 >(
     "auth/loginService",
     async (user, { rejectWithValue }) => {
@@ -25,13 +25,15 @@ try {
     const loginData = response.data?.content;
 
     if (!loginData) {
-        throw new Error("Không nhận được dữ liệu đăng nhập");
+        return rejectWithValue({
+            message: "Không nhận được dữ liệu đăng nhập",
+        });
     }
     localStorage.setItem("USER_LOGIN", JSON.stringify(loginData));
 
     return loginData;
 }catch (error){
-    return rejectWithValue(error as AxiosError<never>);
+    return rejectWithValue(normalizeApiError(error));
 }
     }
 )
@@ -46,6 +48,10 @@ const loginSlice = createSlice({
             state.loading = false;
             localStorage.removeItem("USER_LOGIN");
         },
+        resetLoginState: (state) => {
+            state.loading = false;
+            state.error = null;
+        },
     },
     extraReducers:(builder) =>{
         builder.addCase(loginService.pending, (state) => {
@@ -55,13 +61,16 @@ const loginSlice = createSlice({
         builder.addCase(loginService.fulfilled, (state, action) => {
             state.loading = false;
             state.data = action.payload;
+            state.error = null;
         });
         builder.addCase(loginService.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload ?? null;
+            state.error = action.payload ?? {
+                message: "Đăng nhập thất bại. Vui lòng thử lại.",
+            };
         });
     }
 })
 
-export const { logout } = loginSlice.actions;
+export const { logout, resetLoginState } = loginSlice.actions;
 export default loginSlice.reducer;

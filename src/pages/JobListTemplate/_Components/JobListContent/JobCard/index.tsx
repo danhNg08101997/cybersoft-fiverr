@@ -8,7 +8,6 @@ type CongViecProps = {
 export default function JobCard({ job }: CongViecProps) {
     const [random] = useState(() => Math.floor(Math.random() * 2) + 1);
     return (
-        <>
                 <div
                     key={job.congViec.id}
                     className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white transition hover:shadow-md"
@@ -92,6 +91,5 @@ export default function JobCard({ job }: CongViecProps) {
                         </div>
                     </div>
                 </div>
-        </>
     );
 }

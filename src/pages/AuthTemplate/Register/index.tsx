@@ -1,18 +1,11 @@
 import type {AuthModalProps, RegisterFormValues} from "@types";
-import {Alert, Button, DatePicker, Form, type FormProps, Input, message, Modal, Select} from "antd";
+import {Alert, Button, DatePicker, Form, type FormProps, Input, Modal, Select} from "antd";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {useDispatch, useSelector} from "react-redux";
 import dayjs from "dayjs";
 import {registerService, resetRegisterState} from "@services/register.service.ts";
-import React, {useEffect} from "react";
-import {
-    LockOutlined,
-    MailOutlined,
-    PhoneOutlined,
-    SafetyCertificateOutlined,
-    ToolOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
+import React from "react";
+import {LockOutlined, MailOutlined, PhoneOutlined, UserOutlined,} from "@ant-design/icons";
 
 export default function RegisterComponent(props: AuthModalProps): React.JSX.Element {
     const { isOpen, onClose, onSwitchToLogin } = props;
@@ -21,7 +14,7 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const {loading, data, error} = useSelector((state: RootState) => state.registerReducer);
+    const {loading, error} = useSelector((state: RootState) => state.registerReducer);
 
 
     const handleCancel = (): void => {
@@ -30,46 +23,42 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
         onClose?.();
     };
 
-    const onSubmit: FormProps<RegisterFormValues>["onFinish"] = (values) => {
+    const onSubmit: FormProps<RegisterFormValues>["onFinish"] = async  (values) => {
         const payload = {
             name: values.name.trim(),
-            email: values.email.trim(),
+            email: values.email.trim().toLowerCase(),
             password: values.password,
             phone: values.phone?.trim() || undefined,
-            birthday: values.birthday
-                ? dayjs(values.birthday).format("DD-MM-YYYY")
-                : undefined,
-            gender: values.gender || undefined,
+            birthday: values.birthday ? dayjs(values.birthday).format("DD-MM-YYYY") : undefined,
+            gender: values.gender,
             role: "USER" as const,
-            skill: values.skill
-                ? values.skill
-                    .split(";")
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                : [],
-            certification: values.certification
-                ? values.certification
-                    .split(";")
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                : [],
+            skill: [...new Set((values.skill ?? []).map((item) => item.trim()).filter(Boolean))],
+            certification: [...new Set((values.certification ?? []).map((item) => item.trim()).filter(Boolean))],
         };
 
-        dispatch(registerService(payload));
+        try {
+            await dispatch(registerService(payload)).unwrap();
+            form.resetFields();
+            dispatch(resetRegisterState());
+            onClose?.();
+            onSwitchToLogin?.();
+        } catch {
+            // error đã được lưu ở redux
+        }
     };
 
-    useEffect(() => {
-        if (!data) return;
-
-        message.success("Đăng ký thành công. Vui lòng đăng nhập.");
-        form.resetFields();
-        dispatch(resetRegisterState());
-        onClose?.();
-        onSwitchToLogin?.();
-    }, [data, dispatch, form, onClose, onSwitchToLogin]);
+    // useEffect(() => {
+    //     if (!data) return;
+    //
+    //     message.success("Đăng ký thành công. Vui lòng đăng nhập.");
+    //     form.resetFields();
+    //     dispatch(resetRegisterState());
+    //     onClose?.();
+    //     onSwitchToLogin?.();
+    // }, [data, dispatch, form, onClose, onSwitchToLogin]);
 
     const errorMessage =
-        error?.response?.data && typeof error.response.data === "object"
+        error?.message
             ? "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin."
             : error?.message || "Đăng ký thất bại.";
 
@@ -162,7 +151,18 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                     name="name"
                                     rules={[
                                         { required: true, message: "Vui lòng nhập họ và tên" },
-                                        { min: 2, message: "Tên phải có ít nhất 2 ký tự" },
+                                        {
+                                            validator(_, value) {
+                                                const normalized = value?.trim();
+                                                if (!normalized) {
+                                                    return Promise.reject(new Error("Họ và tên không được để trống"));
+                                                }
+                                                if (normalized.length < 2) {
+                                                    return Promise.reject(new Error("Họ và tên phải có ít nhất 2 ký tự"));
+                                                }
+                                                return Promise.resolve();
+                                            },
+                                        },
                                     ]}
                                 >
                                     <Input
@@ -178,6 +178,14 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                     rules={[
                                         { required: true, message: "Vui lòng nhập email" },
                                         { type: "email", message: "Email không đúng định dạng" },
+                                        {
+                                            validator(_, value) {
+                                                if (value && value.trim() !== value) {
+                                                    return Promise.reject(new Error("Email không được có khoảng trắng ở đầu hoặc cuối"));
+                                                }
+                                                return Promise.resolve();
+                                            },
+                                        },
                                     ]}
                                 >
                                     <Input
@@ -193,12 +201,17 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                     rules={[
                                         { required: true, message: "Vui lòng nhập mật khẩu" },
                                         { min: 6, message: "Mật khẩu tối thiểu 6 ký tự" },
+                                        {
+                                            pattern: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
+                                            message: "Mật khẩu phải chứa ít nhất 1 chữ cái và 1 chữ số",
+                                        },
                                     ]}
                                 >
                                     <Input.Password
                                         prefix={<LockOutlined className="text-slate-400" />}
                                         placeholder="Enter password"
                                         className="h-12 rounded-xl"
+                                        autoComplete="new-password"
                                     />
                                 </Form.Item>
 
@@ -230,6 +243,12 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                 <Form.Item
                                     label={<span className="font-medium text-slate-700">Phone</span>}
                                     name="phone"
+                                    rules={[
+                                        {
+                                            pattern: /^(0|\+84)\d{9,10}$/,
+                                            message: "Số điện thoại không hợp lệ",
+                                        },
+                                    ]}
                                 >
                                     <Input
                                         prefix={<PhoneOutlined className="text-slate-400" />}
@@ -246,6 +265,7 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                         format="DD-MM-YYYY"
                                         placeholder="Chọn ngày sinh"
                                         style={{ width: "100%", height: 48 }}
+                                        disabledDate={(current) => current && current.isAfter(dayjs(), "day")}
                                     />
                                 </Form.Item>
 
@@ -256,9 +276,8 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                     <Select
                                         placeholder="Chọn giới tính"
                                         options={[
-                                            { label: "Nam", value: "male" },
-                                            { label: "Nữ", value: "female" },
-                                            { label: "Khác", value: "other" },
+                                            { label: "Male", value: true },
+                                            { label: "Female", value: false },
                                         ]}
                                         className="h-12"
                                     />
@@ -267,31 +286,65 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                 <Form.Item
                                     label={<span className="font-medium text-slate-700">Role</span>}
                                 >
-                                    <Input value="USER" disabled className="h-12 rounded-xl" />
+                                    <p className="text-xs text-slate-500">
+                                        Tài khoản của bạn sẽ được tạo với vai trò người dùng.
+                                    </p>
                                 </Form.Item>
                             </div>
 
                             <Form.Item
                                 label={<span className="font-medium text-slate-700">Skills</span>}
                                 name="skill"
-                                extra="Nhập nhiều kỹ năng, ngăn cách bằng dấu ;"
+                                tooltip="Nhập từng kỹ năng rồi nhấn Enter"
+                                rules={[
+                                    {
+                                        validator(_, value: string[]) {
+                                            if (!value) return Promise.resolve();
+                                            if (value.length > 15) {
+                                                return Promise.reject(new Error("Tối đa 15 kỹ năng"));
+                                            }
+                                            if (value.some((item) => item.trim().length > 30)) {
+                                                return Promise.reject(new Error("Mỗi kỹ năng tối đa 30 ký tự"));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
+                                ]}
                             >
-                                <Input
-                                    prefix={<ToolOutlined className="text-slate-400" />}
-                                    placeholder="ReactJS; NodeJS; UI Design"
-                                    className="h-12 rounded-xl"
+                                <Select
+                                    mode="tags"
+                                    placeholder="Ví dụ: React, TypeScript, UI/UX"
+                                    tokenSeparators={[";", ","]}
+                                    options={[]}
+                                    className="[&_.ant-select-selector]:min-h-12 [&_.ant-select-selector]:rounded-xl [&_.ant-select-selector]:py-1"
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 label={<span className="font-medium text-slate-700">Certifications</span>}
                                 name="certification"
-                                extra="Nhập nhiều chứng chỉ, ngăn cách bằng dấu ;"
+                                tooltip="Nhập từng chứng chỉ rồi nhấn Enter"
+                                rules={[
+                                    {
+                                        validator(_, value: string[]) {
+                                            if (!value) return Promise.resolve();
+                                            if (value.length > 15) {
+                                                return Promise.reject(new Error("Tối đa 15 chứng chỉ"));
+                                            }
+                                            if (value.some((item) => item.trim().length > 30)) {
+                                                return Promise.reject(new Error("Mỗi chứng chỉ tối đa 30 ký tự"));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
+                                ]}
                             >
-                                <Input
-                                    prefix={<SafetyCertificateOutlined className="text-slate-400" />}
-                                    placeholder="AWS; Google Ads; IELTS"
-                                    className="h-12 rounded-xl"
+                                <Select
+                                    mode="tags"
+                                    placeholder="Ví dụ: IELTS 7.0, Google Ads, AWS CCP"
+                                    tokenSeparators={[";", ","]}
+                                    options={[]}
+                                    className="[&_.ant-select-selector]:min-h-12 [&_.ant-select-selector]:rounded-xl [&_.ant-select-selector]:py-1"
                                 />
                             </Form.Item>
 
@@ -313,7 +366,7 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
                                         handleCancel();
                                         onSwitchToLogin?.();
                                     }}
-                                    className="font-semibold text-emerald-600 hover:text-emerald-700"
+                                    className="font-semibold text-emerald-600 hover:text-emerald-700 cursor-pointer"
                                 >
                                     Sign in
                                 </button>

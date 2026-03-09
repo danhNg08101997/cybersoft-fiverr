@@ -12,9 +12,7 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
     const navigate = useNavigate();
 
     const handleGoToDetailType = (maChiTietLoai:number) => {
-        // navigate(`/loai-cong-viec?jobKind=${encodeURIComponent(maChiTietLoai)}`);
-        navigate(`/job-list?jobKind=${encodeURIComponent(maChiTietLoai)}`);
-
+        navigate(`/danh-sach-cong-viec?jobKind=${encodeURIComponent(maChiTietLoai)}`);
     }
     return (
         <div className="fiverr-mega">

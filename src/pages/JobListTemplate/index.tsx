@@ -16,7 +16,7 @@ export default function JobList(): React.JSX.Element {
 
     const [getLength, setGetLength] = useState<number>(0);
 
-    const [maChiTietLoai] = useState<string>(searchParams.get("jobKind") ?? "".trim())
+    const [maChiTietLoai] = useState<string>(searchParams.get("maChiTietLoai") ?? "".trim())
     // giá trị đã bấm Search để truyền sang JobListContent
     const [keyword, setKeyword] = useState("");
 

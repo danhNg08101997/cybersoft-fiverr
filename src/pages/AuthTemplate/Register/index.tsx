@@ -47,16 +47,6 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
         }
     };
 
-    // useEffect(() => {
-    //     if (!data) return;
-    //
-    //     message.success("Đăng ký thành công. Vui lòng đăng nhập.");
-    //     form.resetFields();
-    //     dispatch(resetRegisterState());
-    //     onClose?.();
-    //     onSwitchToLogin?.();
-    // }, [data, dispatch, form, onClose, onSwitchToLogin]);
-
     const errorMessage =
         error?.message
             ? "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin."

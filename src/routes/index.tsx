@@ -15,15 +15,15 @@ const routes: RouteType[] = [
     },
     {
         path:"danh-sach-cong-viec",
-        element: lazy(() => import("@pages/JobListTemplate")),
-        nested: [
-
-        ]
+        element: lazy(() => import("@pages/JobListTemplate"))
+    },
+    {
+        path:"danh-sach-cong-viec-va-loai-cong-viec",
+        element: lazy(()=>import("@pages/JobListAndJobType"))
     },
     {
         path: "admin",
-        element: lazy(() => import("@pages/AdminTemplate")),
-        nested: []
+        element: lazy(() => import("@pages/AdminTemplate"))
     },
     {
         path:'*',

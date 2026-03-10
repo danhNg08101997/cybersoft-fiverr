@@ -14,7 +14,7 @@ type JobSearchHeaderProps = {
 
 const JobSearchHeader = ({getLength}:JobSearchHeaderProps) => {
     const [searchParams] = useSearchParams();
-    const keyword = searchParams.has("keyword") ? searchParams.get("keyword") ?? "".trim() : searchParams.get("jobKind") ?? "".trim()
+    const keyword = searchParams.has("keyword") ? searchParams.get("keyword") ?? "".trim() : searchParams.get("tenChiTiet") ?? "".trim()
     return (
         <section className="w-full border-t border-gray-200 bg-white">
             <div className="mx-auto max-w-[1400px] px-3 py-3 lg:px-8">

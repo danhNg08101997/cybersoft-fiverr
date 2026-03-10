@@ -146,17 +146,17 @@ export default function Navbar({
                     </div>
 
                     <form onSubmit={handleJobListSubmit} className="flex flex-1 justify-center">
-                        <div className="flex w-full max-w-2xl overflow-hidden rounded border border-gray-600 border-gray-300">
+                        <div className="flex w-full max-w-2xl overflow-hidden">
                             <input
                                 type="text"
                                 placeholder="What service are you looking for today?"
                                 value={inputValue}
                                 onChange={(e) => onChangeInput?.(e.target.value)}
-                                className="h-11 flex-1 px-4 outline-none border-none"
+                                className="h-11 flex-1 px-4 outline-none rounded-s-sm border border-gray-500"
                             />
                             <button
                                 type="submit"
-                                className="border-emerald-500 border-8 bg-emerald-500 px-6 text-sm font-semibold text-white hover:opacity-90 cursor-pointer"
+                                className="border-emerald-500 border-8 bg-emerald-500 px-6 text-sm font-semibold text-white hover:opacity-90 cursor-pointer rounded-e-sm"
                             >
                                 Search
                             </button>

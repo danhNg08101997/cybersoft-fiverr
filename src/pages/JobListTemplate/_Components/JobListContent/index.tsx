@@ -9,13 +9,13 @@ import type {DSCongViecTheoTen} from "@types";
 import {NavLink} from "react-router-dom";
 
 type JobListContentProps = {
-    keyword: string;
-    inputValue: string;
-    maChiTietLoai: string;
-    getLength: (value: number) => void;
+    keyword?: string;
+    inputValue?: string;
+    maChiTietLoai?: string;
+    getLength?: (value: number) => void;
 };
 
-export default function JobListContent({ keyword, inputValue, maChiTietLoai, getLength }: JobListContentProps): React.JSX.Element  {
+export default function JobListContent({ keyword="", inputValue="", maChiTietLoai="", getLength }: JobListContentProps): React.JSX.Element  {
     const PAGE_SIZE: number = 12;
     let jobs: DSCongViecTheoTen[] = []
 
@@ -35,7 +35,7 @@ export default function JobListContent({ keyword, inputValue, maChiTietLoai, get
     }
 
     useEffect(()=>{
-        getLength(jobs.length)
+        getLength?.(jobs.length)
     }, [jobs, getLength]);
 
     useEffect(() => {

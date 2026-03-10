@@ -1,18 +1,18 @@
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import type {MenuProps} from "antd";
 import {Dropdown, Menu} from "antd";
 import type {DsNhomChiTietLoai} from "@types";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {menuCongViecService} from "@services/menuCongViec.service.ts";
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
 
     const navigate = useNavigate();
 
-    const handleGoToDetailType = (maChiTietLoai:number) => {
-        navigate(`/danh-sach-cong-viec?jobKind=${encodeURIComponent(maChiTietLoai)}`);
+    const handleGoToDetailType = (maChiTietLoai:number, tenChiTiet:string) => {
+        navigate(`/danh-sach-cong-viec?maChiTietLoai=${encodeURIComponent(maChiTietLoai)}&tenChiTiet=${encodeURIComponent(tenChiTiet)}`);
     }
     return (
         <div className="fiverr-mega">
@@ -27,7 +27,7 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
                                         key={it.id}
                                         href=""
                                         className={`fiverr-mega__item ${!it.tenChiTiet ? "is-link" : ""}`}
-                                        onClick={()=>handleGoToDetailType(g.maLoaiCongviec)}
+                                        onClick={()=>handleGoToDetailType(it.id, it.tenChiTiet)}
                                     >
                                         <span>{it.tenChiTiet}</span>
                                     </a>
@@ -45,15 +45,23 @@ export default function TopCategoryBar() {
     const [activeKey, setActiveKey] = useState<string>("");
     const dispatch: AppDispatch = useDispatch();
     const {data} = useSelector((state: RootState) => state.menuCongViecReducer);
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(menuCongViecService())
-    }, [])
+    }, [dispatch])
 
+    const handleJobTypeCode = useCallback((maLoaiCongViec?: number) => {
+        if (!maLoaiCongViec) return;
+        navigate(`/danh-sach-cong-viec-va-loai-cong-viec?maLoaiCongviec=${encodeURIComponent(maLoaiCongViec)}`);
+
+    }, [navigate]);
 
     const items: MenuProps["items"] = useMemo(() => {
+
         return data?.map((n) => {
             const labelNode = (<span className="fiverr-topnav__label">{n.tenLoaiCongViec}</span>);
+            const firstMaLoaiCongViec = n.dsNhomChiTietLoai?.[0]?.maLoaiCongviec;
 
             if (n.dsNhomChiTietLoai?.length) {
                 return {
@@ -70,12 +78,16 @@ export default function TopCategoryBar() {
                             popupRender={() => <MegaOverlay groups={n.dsNhomChiTietLoai!}/>}
                             onOpenChange={(open) => setActiveKey(open ? String(n.id) : "")}
                         >
-                            <a
-                                href="#"
+                            <NavLink
+                                to=""
                                 className={`fiverr-topnav__item ${activeKey === String(n.id) ? "is-active" : ""}`}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleJobTypeCode(firstMaLoaiCongViec);
+                                }}
                             >
                                 {labelNode}
-                            </a>
+                            </NavLink>
                         </Dropdown>
                     ),
                 };
@@ -84,13 +96,16 @@ export default function TopCategoryBar() {
             return {
                 key: n.id,
                 label: (
-                    <a href="" className="fiverr-topnav__item">
+                    <NavLink to="" className="fiverr-topnav__item"  onClick={(e) => {
+                        e.preventDefault();
+                        handleJobTypeCode(firstMaLoaiCongViec);
+                    }}>
                         {labelNode}
-                    </a>
+                    </NavLink>
                 ),
             };
         });
-    }, [activeKey, data]);
+    }, [activeKey, data, handleJobTypeCode]);
 
     return (
         <div className="fiverr-topnav">

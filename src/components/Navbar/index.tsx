@@ -137,7 +137,7 @@ export default function Navbar({
 
     if (variant === "jobList") {
         return (
-            <header className="border-b bg-white">
+            <header className="border-b-[#f5f5f5] border-b bg-white">
                 <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
                     <div className="shrink-0">
                         <Link to="/" className="text-3xl font-extrabold tracking-tight text-black">
@@ -191,7 +191,7 @@ export default function Navbar({
                 </div>
 
                 <div className="relative mx-auto max-w-7xl px-6">
-                    <div className="grid min-h-[650px] items-center gap-10 md:grid-cols-2">
+                    <div className="grid min-h-162.5 items-center gap-10 md:grid-cols-2">
                         <div className="pb-14 pt-10 md:pt-0">
                             <h1 className="text-[44px] font-extrabold leading-[1.05] text-white md:text-[56px]">
                                 Find the perfect{" "}
@@ -202,7 +202,7 @@ export default function Navbar({
 
                             <form
                                 onSubmit={handleHomeSubmit}
-                                className="mt-8 flex w-full max-w-[680px] overflow-hidden rounded-sm bg-white shadow-sm"
+                                className="mt-8 flex w-full max-w-170 overflow-hidden rounded-sm bg-white shadow-sm"
                             >
                                 <div className="flex flex-1 items-center gap-3 px-4">
                                     <svg
@@ -257,7 +257,7 @@ export default function Navbar({
                         </div>
 
                         <div className="relative hidden h-full md:block">
-                            <div className="absolute right-0 top-0 h-full w-[520px]">
+                            <div className="absolute right-0 top-0 h-full w-130">
                                 <img
                                     src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=80"
                                     alt="Hero model"

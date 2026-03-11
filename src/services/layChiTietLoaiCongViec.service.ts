@@ -19,7 +19,7 @@ export const layChiTietLoaiCongViecService = createAsyncThunk(
 
             return response.data.content ?? response.data;
         }catch (error){
-            return thunkAPI.rejectWithValue( error || "Không thể tải danh sách công việc" );
+            return thunkAPI.rejectWithValue( error || "Không thể tải danh sách chi tiết loại công việc" );
         }
     }
 )

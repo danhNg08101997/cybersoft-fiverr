@@ -1,6 +1,6 @@
 import Navbar from "@components/Navbar";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import React, {useState} from "react";
+import {useState} from "react";
 import TopCategoryBar from "@pages/JobListTemplate/_Components/TopCategoryBar";
 import FooterHome from "@components/Footer";
 import JobTypeContent from "@pages/JobListAndJobType/_Components/JobTypeContent";

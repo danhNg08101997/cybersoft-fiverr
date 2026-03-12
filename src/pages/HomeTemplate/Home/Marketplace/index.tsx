@@ -120,7 +120,7 @@ function MarketplaceComponent() {
                         >
                             <div className="text-slate-500">{item.icon}</div>
                             {/* underline on hover like Fiverr */}
-                            <div className="mt-1 h-[2px] w-10 bg-slate-200 transition-all duration-200 group-hover:w-14 group-hover:bg-emerald-500" />
+                            <div className="mt-1 h-0.5 w-10 bg-slate-200 transition-all duration-200 group-hover:w-14 group-hover:bg-emerald-500" />
 
                             <div className="mt-2 text-[15px] font-medium text-slate-700">
                                 {item.label}

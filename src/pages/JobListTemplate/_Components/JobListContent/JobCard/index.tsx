@@ -1,5 +1,6 @@
 import type {DSCongViecTheoTen} from "@types";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 type CongViecProps = {
     job: DSCongViecTheoTen;
@@ -7,13 +8,23 @@ type CongViecProps = {
 
 export default function JobCard({ job }: CongViecProps) {
     const [random] = useState(() => Math.floor(Math.random() * 2) + 1);
+
+    const navigate = useNavigate();
+
+    const handleClickJobCard = (jobId: number) => {
+        const params = new URLSearchParams();
+        params.set("maCongViec", String(jobId));
+        navigate(`/chi-tiet-cong-viec?${params.toString()}`);
+        }
+
     return (
                 <div
                     key={job.congViec.id}
                     className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white transition hover:shadow-md"
+                    onClick={() => handleClickJobCard(job.congViec.id)}
                 >
                     {/* ảnh */}
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                    <div className="aspect-4/3 w-full overflow-hidden bg-gray-100">
                         <img
                             src={job.congViec.hinhAnh}
                             alt={job.congViec.tenCongViec}
@@ -26,13 +37,13 @@ export default function JobCard({ job }: CongViecProps) {
                         {/* seller */}
                         <div className="mb-3 flex items-center gap-3">
                             <img
-                                src={job.congViec.hinhAnh}
-                                alt={job.congViec.tenCongViec}
+                                src={job.avatar !== "" ? job.avatar : "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"}
+                                alt={job.tenNguoiTao}
                                 className="h-8 w-8 rounded-full object-cover"
                             />
                             <div className="min-w-0">
                                 <p className="truncate text-sm font-semibold text-gray-800">
-                                    {job.congViec.nguoiTao}
+                                    {job.tenNguoiTao}
                                 </p>
                                 <p className="text-sm text-gray-400">
                                     {`Level ${random} Seller`}
@@ -41,7 +52,7 @@ export default function JobCard({ job }: CongViecProps) {
                         </div>
 
                         {/* title */}
-                        <h3 className="mb-3 line-clamp-2 min-h-[56px] text-[17px] leading-7 text-gray-700">
+                        <h3 className="mb-3 line-clamp-2 min-h-14 text-[17px] leading-7 text-gray-700">
                             {job.congViec.tenCongViec}
                         </h3>
 
@@ -56,12 +67,12 @@ export default function JobCard({ job }: CongViecProps) {
                             </svg>
 
                             <span className="font-semibold text-[#ffb33e]">
-                {job.congViec.saoCongViec?.toFixed(1) || "5.0"}
-              </span>
+                                {job.congViec.saoCongViec?.toFixed(1) || "5.0"}
+                            </span>
 
                             <span className="text-gray-400">
-                ({job.congViec.danhGia || 0})
-              </span>
+                                ({job.congViec.danhGia || 0})
+                            </span>
                         </div>
                     </div>
 

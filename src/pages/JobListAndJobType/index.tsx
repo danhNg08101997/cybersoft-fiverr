@@ -21,7 +21,7 @@ function JobListAndJobType() {
     return (
         <>
             <Navbar
-                variant="jobList"
+                variant="JOB"
                 inputValue={inputValue}
                 onChangeInput={setInputValue}
                 onSearch={handleSearch}

@@ -17,7 +17,6 @@ type JobListContentProps = {
 
 export default function JobListContent({ keyword="", inputValue="", maChiTietLoai="", getLength }: JobListContentProps): React.JSX.Element  {
     const PAGE_SIZE: number = 12;
-    let jobs: DSCongViecTheoTen[] = []
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -27,12 +26,12 @@ export default function JobListContent({ keyword="", inputValue="", maChiTietLoa
 
     const { data: chiTietLoaiCongViec } = useSelector( (state: RootState) => state.layChiTietLoaiCongViecReducer );
 
-
-    if(maChiTietLoai !== "" && keyword === ""){
-        jobs = chiTietLoaiCongViec || [];
-    }else {
-        jobs = searchJob || [];
-    }
+    const jobs: DSCongViecTheoTen[] = useMemo(() => {
+        if (maChiTietLoai !== "" && keyword === "") {
+            return chiTietLoaiCongViec || [];
+        }
+        return searchJob || [];
+    }, [maChiTietLoai, keyword, chiTietLoaiCongViec, searchJob]);
 
     useEffect(()=>{
         getLength?.(jobs.length)
@@ -45,16 +44,16 @@ export default function JobListContent({ keyword="", inputValue="", maChiTietLoa
             dispatch(searchJobService(inputValue ? inputValue : keyword))
         }
 
-    },[dispatch, keyword]);
+    },[dispatch, keyword, inputValue, maChiTietLoai]);
 
     const totalPages = Math.ceil(jobs.length / PAGE_SIZE);
+    const safeCurrentPage = Math.min(currentPage, totalPages);
 
     const currentJobs = useMemo(() => {
-        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
         return jobs.slice(startIndex, endIndex);
-    }, [jobs, currentPage]);
-
+    }, [jobs, safeCurrentPage]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -63,9 +62,9 @@ export default function JobListContent({ keyword="", inputValue="", maChiTietLoa
 
     return (
         <section className="w-full bg-white">
-            <div className="mx-auto max-w-[1400px] px-6 py-8 lg:px-8">
-                {!currentJobs || currentJobs.length === 0 ? (
-                    <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-6 text-center">
+            <div className="mx-auto max-w-350 px-6 py-8 lg:px-8">
+                {currentJobs.length === 0 ? (
+                    <div className="flex min-h-105 flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-6 text-center">
                         <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm">
                             <svg
                                 className="h-10 w-10 text-gray-400"
@@ -86,7 +85,7 @@ export default function JobListContent({ keyword="", inputValue="", maChiTietLoa
                             Không tìm thấy công việc phù hợp
                         </h3>
 
-                        <p className="mb-6 max-w-[520px] text-base leading-7 text-gray-500">
+                        <p className="mb-6 max-w-130 text-base leading-7 text-gray-500">
                             Hiện chưa có dữ liệu phù hợp với từ khóa tìm kiếm của bạn.
                             Vui lòng thử lại với từ khóa khác hoặc chọn danh mục khác.
                         </p>

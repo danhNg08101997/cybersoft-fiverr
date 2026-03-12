@@ -28,7 +28,7 @@ export default function JobList(): React.JSX.Element {
     return (
         <div className="min-h-screen bg-white">
             <Navbar
-                variant="jobList"
+                variant="JOB"
                 inputValue={inputValue}
                 onChangeInput={setInputValue}
                 onSearch={handleSearch}

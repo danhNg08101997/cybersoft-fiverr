@@ -22,6 +22,10 @@ const routes: RouteType[] = [
         element: lazy(()=>import("@pages/JobListAndJobType"))
     },
     {
+        path:"chi-tiet-cong-viec",
+        element: lazy(()=>import("@pages/JobDetailTemplate"))
+    },
+    {
         path: "admin",
         element: lazy(() => import("@pages/AdminTemplate"))
     },

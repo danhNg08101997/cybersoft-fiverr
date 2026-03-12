@@ -5,7 +5,7 @@ import Navbar from "@components/Navbar";
 function HomeTemplate() {
     return (
         <div className="w-full min-h-screen bg-white">
-            <Navbar variant="home" />
+            <Navbar variant="HOME" />
             <Outlet/>
             <FooterHome/>
         </div>

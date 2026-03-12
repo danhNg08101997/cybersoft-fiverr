@@ -17,7 +17,7 @@ const JobSearchHeader = ({getLength}:JobSearchHeaderProps) => {
     const keyword = searchParams.has("keyword") ? searchParams.get("keyword") ?? "".trim() : searchParams.get("tenChiTiet") ?? "".trim()
     return (
         <section className="w-full border-t border-gray-200 bg-white">
-            <div className="mx-auto max-w-[1400px] px-3 py-3 lg:px-8">
+            <div className="mx-auto max-w-350 px-3 py-3 lg:px-8">
                 {/* Title + related links */}
                 <div className="mb-6 flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                     <div>

@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from "react";
-import {Link, NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import LoginComponent from "@pages/AuthTemplate/Login";
 import RegisterComponent from "@pages/AuthTemplate/Register";
@@ -15,14 +15,14 @@ const popularTags: PopularTag[] = [
 ];
 
 type NavbarProps = {
-    variant?: "home" | "jobList";
+    variant?: "HOME" | "JOB";
     inputValue?: string;
     onChangeInput?: (value: string) => void;
     onSearch?: (value: string) => void;
 };
 
 export default function Navbar({
-                                   variant = "home",
+                                   variant = "HOME",
                                    inputValue = "",
                                    onChangeInput,
                                    onSearch,
@@ -95,7 +95,7 @@ export default function Navbar({
 
                     <button
                         type="button"
-                        className={variant === "home" ? "cursor-pointer rounded border px-4 py-2 text-sm font-semibold" : "cursor-pointer rounded border border-emerald-500 bg-emerald-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600" }
+                        className={variant === "HOME" ? "cursor-pointer rounded border px-4 py-2 text-sm font-semibold" : "cursor-pointer rounded border border-emerald-500 bg-emerald-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600" }
                         onClick={showRegisterModal}
                     >
                         Join
@@ -109,7 +109,7 @@ export default function Navbar({
 
                     <button
                         type="button"
-                        className={variant === "home" ? "cursor-pointer text-sm font-semibold" : "cursor-pointer rounded border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"}
+                        className={variant === "HOME" ? "cursor-pointer text-sm font-semibold" : "cursor-pointer rounded border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-100"}
                         onClick={handleLogout}
                     >
                         Logout
@@ -135,14 +135,14 @@ export default function Navbar({
         </>
     );
 
-    if (variant === "jobList") {
+    if (variant === "JOB") {
         return (
             <header className="border-b-[#f5f5f5] border-b bg-white">
                 <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
                     <div className="shrink-0">
-                        <Link to="/" className="text-3xl font-extrabold tracking-tight text-black">
+                        <NavLink to="/" className="text-3xl font-extrabold tracking-tight text-black">
                             fiverr<span className="text-emerald-500">.</span>
-                        </Link>
+                        </NavLink>
                     </div>
 
                     <form onSubmit={handleJobListSubmit} className="flex flex-1 justify-center">

@@ -3,7 +3,7 @@ function TrustedComponent() {
         <section className="border-b border-slate-100 bg-gray-100">
             <div className="mx-auto max-w-7xl px-6">
                 <div
-                    className="flex h-[84px] items-center justify-center gap-10 text-[12px] font-semibold text-slate-300 md:gap-14">
+                    className="flex h-21 items-center justify-center gap-10 text-[12px] font-semibold text-slate-300 md:gap-14">
                     <span className="text-slate-300">Trusted by:</span>
 
                     <span className="tracking-[0.18em] text-slate-300">FACEBOOK</span>

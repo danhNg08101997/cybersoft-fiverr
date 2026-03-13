@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import LoginComponent from "@pages/AuthTemplate/Login";
@@ -19,6 +19,8 @@ type NavbarProps = {
     inputValue?: string;
     onChangeInput?: (value: string) => void;
     onSearch?: (value: string) => void;
+    checkLogin?: boolean;
+    onCloseLoginRequest?: () => void;
 };
 
 export default function Navbar({
@@ -26,7 +28,10 @@ export default function Navbar({
                                    inputValue = "",
                                    onChangeInput,
                                    onSearch,
+                                   checkLogin = false,
+                                   onCloseLoginRequest,
                                }: NavbarProps): React.JSX.Element {
+
     const [q, setQ] = useState<string>("");
     const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
     const [isRegisterModal, setIsRegisterModal] = useState<boolean>(false);
@@ -36,7 +41,10 @@ export default function Navbar({
     const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
 
     const trimmedHomeQuery = useMemo(() => q.trim(), [q]);
-    const trimmedJobListQuery = useMemo(() => inputValue.trim(), [inputValue]);
+    const trimmedJobListQuery = useMemo(
+        () => (inputValue ?? "").trim(),
+        [inputValue]
+    );
 
     const handleLogout = (): void => {
         dispatch(logout());
@@ -48,6 +56,7 @@ export default function Navbar({
     const closeAllModals = (): void => {
         setIsLoginModal(false);
         setIsRegisterModal(false);
+        onCloseLoginRequest?.();
     };
 
     const switchRegisterToLogin = (): void => {
@@ -76,6 +85,14 @@ export default function Navbar({
         if (!trimmedJobListQuery) return;
         onSearch?.(trimmedJobListQuery);
     };
+
+    useEffect(() => {
+        if (checkLogin) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setIsLoginModal(true);
+        }
+    }, [checkLogin]);
+
 
     const renderAuthSection = () => (
         <>

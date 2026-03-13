@@ -1,14 +1,26 @@
 import {BadgeCheck, Check, ChevronDown, Clock3, RefreshCw} from "lucide-react";
+import type {DSCongViecTheoTen} from "@types";
+import {useSelector} from "react-redux";
+import type {RootState} from "@store/index.ts";
 
-const packageFeatures = [
-    "8 pages",
-    "Design customization",
-    "Content upload",
-    "Responsive design",
-    "Source code",
-    "Detailed code comments",
-];
-export default function JobDetailContentRight() {
+type JobDetailProp = {
+    item: DSCongViecTheoTen
+    onLogin?: () => void;
+}
+
+export default function JobDetailContentRight( {item , onLogin}: JobDetailProp ) {
+    const packageFeatures = item.congViec.moTaNgan.split("\r\n")
+
+    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+
+    const handlePayment = () => {
+        if(!currentUser){
+            onLogin?.()
+        }
+        console.log("🚀 ~ JobDetailContentRight ~ Thuê công việc", currentUser);
+
+    }
+
     return (
         <>
             <div className="overflow-hidden rounded-2xl border border-[#dadbdd] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
@@ -21,9 +33,9 @@ export default function JobDetailContentRight() {
                 <div className="p-7">
                     <div className="flex items-start justify-between gap-4">
                         <h3 className="max-w-[250px] text-[28px] font-bold leading-[1.35] text-[#222325]">
-                            PHP Laravel App UI Starts from
+                            {item.congViec.tenCongViec}
                         </h3>
-                        <span className="text-[40px] font-bold leading-none text-[#222325]">$100</span>
+                        <span className="text-[40px] font-bold leading-none text-[#222325]">{`$${item.congViec.giaTien}`}</span>
                     </div>
 
                     <p className="mt-5 text-[18px] leading-8 text-[#62646a]">
@@ -50,7 +62,7 @@ export default function JobDetailContentRight() {
                         ))}
                     </div>
 
-                    <button className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[#222325] px-6 py-4 text-[18px] font-semibold text-white transition hover:bg-black">
+                    <button onClick={handlePayment} className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[#222325] px-6 py-4 text-[18px] font-semibold text-white transition hover:bg-black">
                         Request to order
                     </button>
 

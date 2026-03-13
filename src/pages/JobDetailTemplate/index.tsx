@@ -1,5 +1,5 @@
 import Navbar from "@components/Navbar";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import JobBreadcrumbComponent from "@pages/JobDetailTemplate/_Components/JobBreadcrumb";
 import TopCategoryBar from "@pages/JobListTemplate/_Components/TopCategoryBar";
@@ -7,24 +7,45 @@ import JobDetailContent from "@pages/JobDetailTemplate/_Components/JobDetailCont
 import JobDetailContentRight from "@pages/JobDetailTemplate/_Components/JobDetailContent/JobDetailContentRight";
 import FooterHome from "@components/Footer";
 import {ChevronDown, Star} from "lucide-react";
+import type {AppDispatch, RootState} from "@store/index.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {layCongViecChiTietService} from "@services/layCongViecChiTiet.service.ts";
 
 
 export default function JobDetailTemplate() {
     const [searchParams] = useSearchParams();
 
+    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
+
+    const maCongViec = searchParams.get("maCongViec")?.trim() ?? "";
+    const keyword = searchParams.get("keyword")?.trim() ?? "";
+
+    const { data, loading } = useSelector(
+        (state: RootState) => state.layCongViecChiTietReducer
+    );
+
+    const dispatch: AppDispatch = useDispatch();
+
     const navigate = useNavigate();
 
-    const [inputValue, setInputValue] = useState<string>(searchParams.get("keyword") ?? "".trim());
+    const [inputValue, setInputValue] = useState<string>(keyword);
 
     const handleSearch = (value: string) => {
         navigate(`/danh-sach-cong-viec?keyword=${encodeURIComponent(value.trim())}`);
     };
 
-    const jobDetail = {
-        tenLoaiCongViec: "Programming & Tech",
-        tenNhomChiTietLoai: "Website Builders & CMS",
-        tenChiTietLoai: "Full Website Creation",
-    };
+    useEffect(() => {
+        if (!maCongViec) return;
+        dispatch(layCongViecChiTietService(maCongViec));
+    }, [dispatch, maCongViec]);
+
+    if (loading) {
+        return (
+            <div className="p-6">
+                Đang tải chi tiết công việc...
+            </div>
+        );
+    }
 
     return (
         <>
@@ -33,26 +54,30 @@ export default function JobDetailTemplate() {
                 inputValue={inputValue}
                 onChangeInput={setInputValue}
                 onSearch={handleSearch}
+                checkLogin={isLoginModal}
+                onCloseLoginRequest={() => setIsLoginModal(false)}
             />
 
             <TopCategoryBar/>
-
-            <div className="min-h-screen bg-white text-[#404145]">
+            {data?.map((item) => (
+            <div key = {item.id} className="min-h-screen bg-white text-[#404145]">
                 <div className="mx-auto max-w-350 px-3 py-3 lg:px-8">
                     <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,820px)_420px]">
                         {/*LEFT CONTENT*/}
                         <main>
-                            <JobBreadcrumbComponent
-                                tenLoaiCongViec={jobDetail.tenLoaiCongViec}
-                                tenNhomChiTietLoai={jobDetail.tenNhomChiTietLoai}
-                                tenChiTietLoai={jobDetail.tenChiTietLoai}
-                            />
-                            <JobDetailContent/>
+
+                                <JobBreadcrumbComponent
+                                    tenLoaiCongViec={item.tenLoaiCongViec}
+                                    tenNhomChiTietLoai={item.tenNhomChiTietLoai}
+                                    tenChiTietLoai={item.tenChiTietLoai}
+                                />
+
+                            <JobDetailContent item = {item}/>
 
                             {/*USER INFOR*/}
                             <section className="mt-14 border-t border-[#e4e5e7] pt-12">
                                 <h2 className="text-[44px] font-bold tracking-[-0.02em] text-[#222325] md:text-[54px]">
-                                    Get to know Harminder S
+                                    Get to know {item.tenNguoiTao}
                                 </h2>
 
                                 <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
@@ -62,8 +87,8 @@ export default function JobDetailTemplate() {
                                             <div
                                                 className="relative h-full w-full overflow-hidden rounded-full bg-white ring-4 ring-white">
                                                 <img
-                                                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80"
-                                                    alt="Harminder S"
+                                                    src={ `${ item.avatar ? item.avatar : "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" }` }
+                                                    alt={ `${ item.tenNguoiTao ? item.tenNguoiTao : "seller avatar" }` }
                                                     className="h-full w-full object-cover"
                                                 />
                                                 <button
@@ -77,8 +102,9 @@ export default function JobDetailTemplate() {
 
                                     <div className="flex-1 pt-1">
                                         <div className="flex flex-wrap items-center gap-4">
-                                            <h3 className="text-[28px] font-bold text-[#222325] md:text-[34px]">Harminder
-                                                S</h3>
+                                            <h3 className="text-[28px] font-bold text-[#222325] md:text-[34px]">
+                                                {item.tenNguoiTao}
+                                            </h3>
                                             <span
                                                 className="rounded-lg bg-[#ecebff] px-4 py-2 text-[18px] font-semibold text-[#3b3ea8]">
                                                 Vetted Pro
@@ -93,7 +119,7 @@ export default function JobDetailTemplate() {
                                             className="mt-5 flex flex-wrap items-center gap-4 text-[22px] text-[#222325]">
                                             <div className="flex items-center gap-2 font-bold">
                                                 <Star className="h-7 w-7 fill-current"/>
-                                                <span>5.0</span>
+                                                <span>{`${item.congViec.saoCongViec}.0`}</span>
                                             </div>
                                             <button
                                                 className="text-[22px] text-[#62646a] underline decoration-[#b5b6ba] underline-offset-4 transition hover:text-[#1dbf73]">
@@ -291,11 +317,12 @@ export default function JobDetailTemplate() {
 
                         {/*RIGHT CONTENT*/}
                         <aside className="xl:sticky xl:top-6 xl:self-start">
-                        <JobDetailContentRight/>
+                        <JobDetailContentRight item = {item} onLogin={() => setIsLoginModal(true)}/>
                         </aside>
                     </div>
                 </div>
             </div>
+            ))}
 
             {/*FOOTER*/}
             <FooterHome/>

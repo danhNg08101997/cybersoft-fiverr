@@ -6,6 +6,8 @@ import menuCongViecReducer from '@services/menuCongViec.service.ts'
 import layChiTietLoaiCongViecReducer from '@services/layChiTietLoaiCongViec.service.ts'
 import layLoaiCongViecReducer from '@services/layLoaiCongViec.service.ts'
 import layCongViecChiTietReducer from '@services/layCongViecChiTiet.service.ts'
+import layBinhLuanTheoCongViecReducer from '@services/layBinhLuanTheoCongViec.service'
+import binhLuanReducer from '@services/binhLuan.service'
 
 export const store = configureStore({
     reducer: {
@@ -16,6 +18,8 @@ export const store = configureStore({
         layChiTietLoaiCongViecReducer,
         layLoaiCongViecReducer,
         layCongViecChiTietReducer,
+        layBinhLuanTheoCongViecReducer,
+        binhLuanReducer
     },
 })
 

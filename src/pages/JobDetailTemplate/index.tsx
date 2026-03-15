@@ -10,9 +10,16 @@ import {ChevronDown, Star} from "lucide-react";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {layCongViecChiTietService} from "@services/layCongViecChiTiet.service.ts";
+import {layBinhLuanTheoCongViecService} from "@services/layBinhLuanTheoCongViec.service.ts";
+import TextArea from "antd/es/input/TextArea";
+import {Form, type FormProps} from "antd";
+import type {BinhLuanRequst} from "@types";
+import {binhLuanService} from "@services/binhLuan.service.ts";
 
 
 export default function JobDetailTemplate() {
+    const [form] = Form.useForm<BinhLuanRequst>();
+
     const [searchParams] = useSearchParams();
 
     const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
@@ -24,6 +31,11 @@ export default function JobDetailTemplate() {
         (state: RootState) => state.layCongViecChiTietReducer
     );
 
+    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+
+
+    const {data: binhLuan} = useSelector((state: RootState) => state.layBinhLuanTheoCongViecReducer)
+
     const dispatch: AppDispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -34,9 +46,30 @@ export default function JobDetailTemplate() {
         navigate(`/danh-sach-cong-viec?keyword=${encodeURIComponent(value.trim())}`);
     };
 
+    const handleAddComment: FormProps<BinhLuanRequst>["onFinish"] = async (values ) => {
+        if(!currentUser){
+            return setIsLoginModal(true)
+        }
+        const payload = {
+            maCongviec: Number(maCongViec),
+            maNguoiBinhLuan: currentUser?.user.id,
+            ngayBinhLuan: new Date().toLocaleDateString('vi-VN'),
+            noiDung: values?.noiDung,
+            saoBinhLuan: 5
+        }
+        try{
+            await dispatch(binhLuanService(payload)).unwrap()
+            form.resetFields()
+            dispatch(layBinhLuanTheoCongViecService(maCongViec))
+        }catch{
+            // error đã được lưu ở redux
+        }
+    }
+
     useEffect(() => {
         if (!maCongViec) return;
         dispatch(layCongViecChiTietService(maCongViec));
+        dispatch(layBinhLuanTheoCongViecService(maCongViec))
     }, [dispatch, maCongViec]);
 
     if (loading) {
@@ -46,6 +79,7 @@ export default function JobDetailTemplate() {
             </div>
         );
     }
+
 
     return (
         <>
@@ -59,6 +93,7 @@ export default function JobDetailTemplate() {
             />
 
             <TopCategoryBar/>
+
             {data?.map((item) => (
             <div key = {item.id} className="min-h-screen bg-white text-[#404145]">
                 <div className="mx-auto max-w-350 px-3 py-3 lg:px-8">
@@ -83,7 +118,7 @@ export default function JobDetailTemplate() {
                                 <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
                                     <div className="relative shrink-0">
                                         <div
-                                            className="flex h-[188px] w-[188px] items-center justify-center rounded-full bg-gradient-to-b from-[#4f8a49] to-[#96cf47] p-[8px] shadow-sm">
+                                            className="flex h-47 w-47 items-center justify-center rounded-full bg-linear-to-b from-[#4f8a49] to-[#96cf47] p-2 shadow-sm">
                                             <div
                                                 className="relative h-full w-full overflow-hidden rounded-full bg-white ring-4 ring-white">
                                                 <img
@@ -94,7 +129,7 @@ export default function JobDetailTemplate() {
                                                 <button
                                                     className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition hover:scale-105 hover:bg-black/65">
                                                     <div
-                                                        className="ml-1 h-0 w-0 border-b-[10px] border-l-[16px] border-t-[10px] border-b-transparent border-l-white border-t-transparent"/>
+                                                        className="ml-1 h-0 w-0 border-b-10 border-l-16 border-t-10 border-b-transparent border-l-white border-t-transparent"/>
                                                 </button>
                                             </div>
                                         </div>
@@ -111,7 +146,7 @@ export default function JobDetailTemplate() {
                                             </span>
                                         </div>
 
-                                        <p className="mt-4 max-w-[980px] text-[26px] leading-[1.45] text-[#62646a] md:text-[32px]">
+                                        <p className="mt-4 max-w-245 text-[26px] leading-[1.45] text-[#62646a] md:text-[32px]">
                                             Mobile App Developer I Full Stack Web Developer I Software Developer
                                         </p>
 
@@ -133,7 +168,7 @@ export default function JobDetailTemplate() {
                                         </div>
 
                                         <button
-                                            className="mt-8 inline-flex min-h-[76px] items-center justify-center rounded-2xl border border-[#222325] bg-white px-7 text-[24px] font-semibold text-[#222325] transition hover:bg-[#f5f5f5]">
+                                            className="mt-8 inline-flex min-h-19 items-center justify-center rounded-2xl border border-[#222325] bg-white px-7 text-[24px] font-semibold text-[#222325] transition hover:bg-[#f5f5f5]">
                                             Contact me
                                         </button>
                                     </div>
@@ -192,7 +227,7 @@ export default function JobDetailTemplate() {
                                                 { label: "1 Star", value: 0, percent: 0 },
                                             ].map((item) => (
                                                 <div key={item.label} className="flex items-center gap-4">
-                                                    <span className="w-[90px] text-[20px] text-[#62646a]">{item.label}</span>
+                                                    <span className="w-22.5 text-[20px] text-[#62646a]">{item.label}</span>
 
                                                     <div className="relative h-3 flex-1 rounded-full bg-[#e4e5e7]">
                                                         <div
@@ -201,7 +236,7 @@ export default function JobDetailTemplate() {
                                                         />
                                                     </div>
 
-                                                    <span className="w-[40px] text-[18px] text-[#62646a]">({item.value})</span>
+                                                    <span className="w-10 text-[18px] text-[#62646a]">({item.value})</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -245,71 +280,84 @@ export default function JobDetailTemplate() {
                                 </div>
 
                                 <div className="border-b border-[#e4e5e7] pb-8">
-                                    <div className="flex items-start gap-4">
-                                        <img
-                                            src="https://images.unsplash.com/photo-1544725176-7c40e5a2c9f9?auto=format&fit=crop&w=100&q=80"
-                                            className="h-12 w-12 rounded-full object-cover"
-                                        />
+                                    {binhLuan && binhLuan.map((item, index) => (
+                                        <div key={index} className="flex items-start gap-4">
+                                            <img
+                                                src={item.avatar}
+                                                alt={item.tenNguoiBinhLuan}
+                                                className="h-12 w-12 rounded-full object-cover"
+                                            />
 
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 text-[18px] font-semibold text-[#222325]">
-                                                <span>blackballs49</span>
-                                                <div className="flex text-[#222325]">
-                                                    {Array.from({ length: 5 }).map((_, i) => (
-                                                        <Star key={i} className="h-4 w-4 fill-current" />
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                            <div className="mt-1 flex items-center gap-2 text-[14px] text-[#74767e]">
-                                                <span>🇺🇸</span>
-                                                <span>United States</span>
-                                            </div>
-
-                                            <p className="mt-3 max-w-[760px] text-[16px] leading-7 text-[#404145]">
-                                                Nofilrazzaq did a great job. I forgot to add a few things and he had no problem fixing what I forgot and making sure I was happy with the end product.
-                                            </p>
-
-                                            <div className="mt-3 flex items-center gap-6 text-[14px] text-[#74767e]">
-                                                <span>Published 10 months ago</span>
-                                                <button className="hover:text-[#1dbf73]">Helpful</button>
-                                                <button className="hover:text-[#1dbf73]">Not Helpful</button>
-                                            </div>
-
-                                            <div className="mt-6 flex items-start gap-3 rounded-lg bg-[#f7f7f7] p-4">
-                                                <img
-                                                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80"
-                                                    className="h-9 w-9 rounded-full object-cover"
-                                                />
-                                                <div>
-                                                    <div className="text-[15px] font-semibold text-[#222325]">
-                                                        Seller's Response
-                                                    </div>
-                                                    <p className="mt-1 max-w-[640px] text-[15px] leading-6 text-[#404145]">
-                                                        Thank you for your order it was a great experience working with you. Will be looking forward to work with you more.
-                                                    </p>
-                                                    <div className="mt-2 text-[13px] text-[#74767e]">
-                                                        Published 10 months ago
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 text-[18px] font-semibold text-[#222325]">
+                                                    <span>{item.tenNguoiBinhLuan}</span>
+                                                    <div className="flex text-[#222325]">
+                                                        {Array.from({ length: item.saoBinhLuan }).map((_, i) => (
+                                                            <Star key={i} className="h-4 w-4 fill-current" />
+                                                        ))}
                                                     </div>
                                                 </div>
-                                            </div>
 
+                                                <div className="mt-1 flex items-center gap-2 text-[14px] text-[#74767e]">
+                                                    <span>🇺🇸</span>
+                                                    <span>United States</span>
+                                                </div>
+
+                                                <p className="mt-3 max-w-190 text-[16px] leading-7 text-[#404145]">
+                                                    {item.noiDung}
+                                                </p>
+
+                                                <div className="mt-3 flex items-center gap-6 text-[14px] text-[#74767e]">
+                                                    {/*<span>Published 10 months ago</span>*/}
+                                                    <span>{item.ngayBinhLuan}</span>
+                                                    <button className="hover:text-[#1dbf73]">Helpful</button>
+                                                    <button className="hover:text-[#1dbf73]">Not Helpful</button>
+                                                </div>
+
+                                                {/*<div className="mt-6 flex items-start gap-3 rounded-lg bg-[#f7f7f7] p-4">*/}
+                                                {/*    <img*/}
+                                                {/*        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80"*/}
+                                                {/*        className="h-9 w-9 rounded-full object-cover"*/}
+                                                {/*    />*/}
+                                                {/*    <div>*/}
+                                                {/*        <div className="text-[15px] font-semibold text-[#222325]">*/}
+                                                {/*            Seller's Response*/}
+                                                {/*        </div>*/}
+                                                {/*        <p className="mt-1 max-w-[640px] text-[15px] leading-6 text-[#404145]">*/}
+                                                {/*            Thank you for your order it was a great experience working with you. Will be looking forward to work with you more.*/}
+                                                {/*        </p>*/}
+                                                {/*        <div className="mt-2 text-[13px] text-[#74767e]">*/}
+                                                {/*            Published 10 months ago*/}
+                                                {/*        </div>*/}
+                                                {/*    </div>*/}
+                                                {/*</div>*/}
+
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex items-start gap-4">
+                                    ))}
+
+                                    <div className="flex items-start gap-4 mt-20">
                                         <img
                                             src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png"
+                                            alt="hinh-anh"
                                             className="h-10 w-10"
                                         />
-                                        <div className="flex-1">
-                                            <textarea
-                                              placeholder="Write a comment..."
-                                              className="h-[120px] w-full rounded-md border border-[#e4e5e7] p-3 text-[15px] outline-none focus:border-[#1dbf73]"
-                                            />
-                                            <button className="mt-4 rounded bg-[#1dbf73] px-5 py-2 text-[14px] font-semibold text-white hover:bg-[#19a463]">
+                                        <Form<BinhLuanRequst> form={form}
+                                                              className="flex-1"
+                                                              onFinish={handleAddComment}>
+                                            <Form.Item
+                                            name="noiDung"
+                                            >
+                                                <TextArea
+                                                    placeholder="Write a comment..."
+                                                    className="h-30 w-full rounded-md border border-[#e4e5e7] p-3 text-[15px] outline-none focus:border-[#1dbf73]"
+                                                />
+                                            </Form.Item>
+
+                                            <button type="submit" className="mt-4 rounded bg-[#1dbf73] px-5 py-2 text-[14px] font-semibold text-white hover:bg-[#19a463]">
                                                 Add Comment
                                             </button>
-                                        </div>
+                                        </Form>
                                     </div>
                                 </div>
                             </section>

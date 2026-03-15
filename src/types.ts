@@ -151,3 +151,20 @@ export type DsChiTietLoai = {
     id: number;
     tenChiTiet: string;
 }
+
+export type BinhLuan = {
+    id: number;
+    ngayBinhLuan: string;
+    noiDung: string;
+    saoBinhLuan: number;
+    tenNguoiBinhLuan: string;
+    avatar: string;
+}
+
+export type BinhLuanRequst = {
+    maCongviec: number;
+    maNguoiBinhLuan: number | undefined;
+    ngayBinhLuan: string;
+    noiDung: string;
+    saoBinhLuan: number;
+}

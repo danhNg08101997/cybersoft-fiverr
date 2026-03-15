@@ -9,8 +9,10 @@ export const apiConfig = axios.create({
 apiConfig.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     const user = localStorage.getItem("USER_LOGIN")
 
-    const accessToken = user ? JSON.parse(user).accessToken : "";
+    const accessToken = user ? JSON.parse(user).token : "";
+    console.log("🚀 ~  ~ accessToken: ", accessToken);
 
+    config.headers.token = accessToken;
     config.headers.Authorization = `Bearer ${accessToken}`;
     config.headers.TokenCybersoft = TOKEN_CYBERSOFT;
 

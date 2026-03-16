@@ -2,6 +2,7 @@ import {lazy} from "react";
 import {Route} from "react-router-dom";
 import type {RouteType} from "@types";
 
+
 const routes: RouteType[] = [
     {
         path: "",
@@ -27,7 +28,25 @@ const routes: RouteType[] = [
     },
     {
         path: "admin",
-        element: lazy(() => import("@pages/AdminTemplate"))
+        element: lazy(() => import("@pages/AdminTemplate/index.tsx")),
+        nested: [
+            {
+                path: "dashboard",
+                element: lazy(()=>import("@pages/AdminTemplate/_pages/Dashboard"))
+            },
+            {
+                path: "users",
+                element: lazy(()=>import("@pages/AdminTemplate/_pages/UserManagement"))
+            },
+            {
+                path: "jobs",
+                element: lazy(()=>import("@pages/AdminTemplate/_pages/JobManagement"))
+            },
+            {
+                path: "orders",
+                element: lazy(()=>import("@pages/AdminTemplate/_pages/OrderManagement"))
+            },
+        ]
     },
     {
         path:'*',

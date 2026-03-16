@@ -9,6 +9,7 @@ import layCongViecChiTietReducer from '@services/layCongViecChiTiet.service.ts'
 import layBinhLuanTheoCongViecReducer from '@services/layBinhLuanTheoCongViec.service'
 import binhLuanReducer from '@services/binhLuan.service'
 import thueCongViecReducer from '@services/thueCongViec.service.ts'
+import layDanhSachDaThueReducer from '@services/congViecDaThue.service.ts'
 
 export const store = configureStore({
     reducer: {
@@ -21,7 +22,8 @@ export const store = configureStore({
         layCongViecChiTietReducer,
         layBinhLuanTheoCongViecReducer,
         binhLuanReducer,
-        thueCongViecReducer
+        thueCongViecReducer,
+        layDanhSachDaThueReducer
     },
 })
 

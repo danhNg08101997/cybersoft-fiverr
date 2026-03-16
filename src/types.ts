@@ -77,6 +77,7 @@ export type User = {
     role: "ADMIN" | "USER";
     skill?: Array<string>;
     certification?: Array<string>;
+    bookingJob?: Array<string>;
 }
 
 export interface ServiceInterface {
@@ -175,4 +176,11 @@ export type ThueCongViec = {
     maNguoiThue: number | undefined;
     ngayThue: string;
     hoanThanh: boolean
+}
+
+export type CongViecDaThue = {
+    id?: number;
+    ngayThue: number;
+    hoanThanh: boolean;
+    congViec: CongViec;
 }

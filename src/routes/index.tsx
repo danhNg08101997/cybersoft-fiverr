@@ -32,6 +32,10 @@ const routes: RouteType[] = [
     {
         path:'*',
         element: lazy(()=>import("@pages/PageNotFound"))
+    },
+    {
+        path: 'trang-ca-nhan',
+        element: lazy(()=>import('@pages/ProfileTemplate'))
     }
 ]
 

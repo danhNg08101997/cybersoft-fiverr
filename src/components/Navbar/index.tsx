@@ -120,9 +120,9 @@ export default function Navbar({
                 </>
             ) : (
                 <>
-                    <span className="text-sm font-semibold">
+                    <NavLink to="/trang-ca-nhan" className="text-sm font-semibold">
                         {currentUser.user.name}
-                    </span>
+                    </NavLink>
 
                     <button
                         type="button"

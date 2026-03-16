@@ -10,7 +10,6 @@ apiConfig.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     const user = localStorage.getItem("USER_LOGIN")
 
     const accessToken = user ? JSON.parse(user).token : "";
-    console.log("🚀 ~  ~ accessToken: ", accessToken);
 
     config.headers.token = accessToken;
     config.headers.Authorization = `Bearer ${accessToken}`;

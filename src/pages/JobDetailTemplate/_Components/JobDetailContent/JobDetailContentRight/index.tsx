@@ -1,23 +1,48 @@
 import {BadgeCheck, Check, ChevronDown, Clock3, RefreshCw} from "lucide-react";
 import type {DSCongViecTheoTen} from "@types";
-import {useSelector} from "react-redux";
-import type {RootState} from "@store/index.ts";
+import {useDispatch, useSelector} from "react-redux";
+import type {AppDispatch, RootState} from "@store/index.ts";
+import {thueCongViecService} from "@services/thueCongViec.service.ts";
+import {useState} from "react";
 
 type JobDetailProp = {
     item: DSCongViecTheoTen
     onLogin?: () => void;
+    maCongViec?: string;
 }
 
-export default function JobDetailContentRight( {item , onLogin}: JobDetailProp ) {
+export default function JobDetailContentRight( {item , onLogin, maCongViec}: JobDetailProp ) {
+
+    const dispatch: AppDispatch = useDispatch();
+
+    const [ordered, setOrdered] = useState(false);
+
     const packageFeatures = item.congViec.moTaNgan.split("\r\n")
 
     const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
 
-    const handlePayment = () => {
+    const handlePayment = async () => {
         if(!currentUser){
             onLogin?.()
+            return;
         }
-        console.log("🚀 ~ JobDetailContentRight ~ Thuê công việc", currentUser);
+        const payload = {
+            maCongViec: Number(maCongViec),
+            maNguoiThue: currentUser?.user?.id,
+            ngayThue: new Date().toLocaleDateString('vi-VN'),
+            hoanThanh: true
+        }
+
+        try{
+            await dispatch(thueCongViecService(payload)).unwrap()
+
+            alert("🎉 Thuê công việc thành công!");
+            setOrdered(true);
+
+
+        }catch{
+            alert("❌ Thuê công việc thất bại");
+        }
 
     }
 
@@ -32,7 +57,7 @@ export default function JobDetailContentRight( {item , onLogin}: JobDetailProp )
 
                 <div className="p-7">
                     <div className="flex items-start justify-between gap-4">
-                        <h3 className="max-w-[250px] text-[28px] font-bold leading-[1.35] text-[#222325]">
+                        <h3 className="max-w-62.5 text-[28px] font-bold leading-[1.35] text-[#222325]">
                             {item.congViec.tenCongViec}
                         </h3>
                         <span className="text-[40px] font-bold leading-none text-[#222325]">{`$${item.congViec.giaTien}`}</span>
@@ -62,7 +87,7 @@ export default function JobDetailContentRight( {item , onLogin}: JobDetailProp )
                         ))}
                     </div>
 
-                    <button onClick={handlePayment} className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[#222325] px-6 py-4 text-[18px] font-semibold text-white transition hover:bg-black">
+                    <button disabled={ordered} onClick={handlePayment} className={`mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[#222325] px-6 py-4 text-[18px] font-semibold text-white transition hover:bg-black ${ordered ? `disabled:${ordered} opacity-50` : ''}`}>
                         Request to order
                     </button>
 

@@ -168,3 +168,11 @@ export type BinhLuanRequst = {
     noiDung: string;
     saoBinhLuan: number;
 }
+
+export type ThueCongViec = {
+    id?: number;
+    maCongViec: number;
+    maNguoiThue: number | undefined;
+    ngayThue: string;
+    hoanThanh: boolean
+}

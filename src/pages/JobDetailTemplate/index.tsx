@@ -365,7 +365,7 @@ export default function JobDetailTemplate() {
 
                         {/*RIGHT CONTENT*/}
                         <aside className="xl:sticky xl:top-6 xl:self-start">
-                        <JobDetailContentRight item = {item} onLogin={() => setIsLoginModal(true)}/>
+                        <JobDetailContentRight item = {item} maCongViec = {maCongViec} onLogin={() => setIsLoginModal(true)}/>
                         </aside>
                     </div>
                 </div>

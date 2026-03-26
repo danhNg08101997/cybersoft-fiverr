@@ -1,7 +1,7 @@
-import type {InitState, MenuCongViec, TApiResponse} from "@types";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {apiConfig} from "@services/apiConfig.ts";
-import type {AxiosError} from "axios";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { apiConfig } from "@services/apiConfig.ts";
+import type { AppError, InitState, MenuCongViec, TApiResponse } from "@types";
+import { normalizeApiError } from "@utils/normalizeApiError";
 
 const initialState: InitState<MenuCongViec[]> = {
     loading: false,
@@ -9,14 +9,18 @@ const initialState: InitState<MenuCongViec[]> = {
     error: null,
 }
 
-export const menuCongViecService = createAsyncThunk(
+export const menuCongViecService = createAsyncThunk<
+  MenuCongViec[],
+  void,
+  { rejectValue: AppError }
+>(
     "menu/menuCongViec",
     async (__, {rejectWithValue}) => {
         try {
             const response = await apiConfig.get<TApiResponse<MenuCongViec[]>>("cong-viec/lay-menu-loai-cong-viec");
-            return response.data.content;
+            return response.data.content ?? [];
         }catch (error){
-            return rejectWithValue(error);
+            return rejectWithValue(normalizeApiError(error));
         }
     }
 )
@@ -27,15 +31,18 @@ const menuCongViecSlice = createSlice({
     reducers: {},
     extraReducers:(builder)=>{
         builder.addCase(menuCongViecService.pending,(state)=>{
-            state.loading = true
+            state.loading = true;
+            state.error = null;
         })
         builder.addCase(menuCongViecService.fulfilled,(state, action)=>{
             state.loading = false;
-            state.data = action.payload as MenuCongViec[]
+            state.data = action.payload;
+            state.error = null;
         })
         builder.addCase(menuCongViecService.rejected, (state, action)=>{
-            state.loading = false
-            state.error = action.payload as AxiosError<never>
+            state.loading = false;
+            state.error =
+            action.payload ?? { message: 'Không thể tải menu công việc.' };
         })
     }
 })

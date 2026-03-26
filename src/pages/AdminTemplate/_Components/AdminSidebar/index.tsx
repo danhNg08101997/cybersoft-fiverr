@@ -1,38 +1,38 @@
-import { LayoutDashboard, Users, Briefcase, ShoppingCart } from "lucide-react";
-import {NavLink} from "react-router-dom";
+import { LayoutDashboard, Users, Briefcase, ShoppingCart } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import type { JSX } from 'react';
 
-export default function AdminSidebar() {
-    return (
-        <aside className="w-64 bg-[#111827] text-white flex flex-col p-6">
+const navClass = ({ isActive }: { isActive: boolean }) =>
+  `flex items-center gap-3 rounded-lg px-3 py-2 transition ${
+    isActive ? 'bg-white/10 text-green-400' : 'text-white hover:text-green-400'
+  }`;
 
-            <h1 className="text-2xl font-bold mb-10">
-                Fiverr Quản Trị
-            </h1>
+export default function AdminSidebar(): JSX.Element {
+  return (
+    <aside className="flex w-64 flex-col bg-[#111827] p-6 text-white">
+      <h1 className="mb-10 text-2xl font-bold">Fiverr Quản Trị</h1>
 
-            <nav className="space-y-4">
+      <nav className="space-y-4">
+        <NavLink to="dashboard" className={navClass}>
+          <LayoutDashboard size={20} />
+          Trang chủ
+        </NavLink>
 
-                <NavLink to="dashboard" className="flex items-center gap-3 hover:text-green-400">
-                    <LayoutDashboard size={20} />
-                    Trang chủ
-                </NavLink>
+        <NavLink to="users" className={navClass}>
+          <Users size={20} />
+          Quản lý người dùng
+        </NavLink>
 
-                <NavLink to="users" className="flex items-center gap-3 hover:text-green-400">
-                    <Users size={20} />
-                    Quản lý người dùng
-                </NavLink>
+        <NavLink to="jobs" className={navClass}>
+          <Briefcase size={20} />
+          Quản lý công việc
+        </NavLink>
 
-                <NavLink to="jobs" className="flex items-center gap-3 hover:text-green-400">
-                    <Briefcase size={20} />
-                    Quản lý công việc
-                </NavLink>
-
-                <NavLink to="orders" className="flex items-center gap-3 hover:text-green-400">
-                    <ShoppingCart size={20} />
-                    Quản lý công việc thuê
-                </NavLink>
-
-            </nav>
-
-        </aside>
-    );
+        <NavLink to="orders" className={navClass}>
+          <ShoppingCart size={20} />
+          Quản lý công việc thuê
+        </NavLink>
+      </nav>
+    </aside>
+  );
 }

@@ -1,132 +1,136 @@
-import {BadgeCheck, Check, ChevronDown, Clock3, RefreshCw} from "lucide-react";
-import type {DSCongViecTheoTen} from "@types";
-import {useDispatch, useSelector} from "react-redux";
-import type {AppDispatch, RootState} from "@store/index.ts";
-import {thueCongViecService} from "@services/thueCongViec.service.ts";
-import {useState} from "react";
+import { BadgeCheck, Check, ChevronDown, Clock3, RefreshCw } from 'lucide-react';
+import type { DSCongViecTheoTen } from '@types';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '@store/index';
+import { thueCongViecService } from '@services/thueCongViec.service';
+import { useMemo, useState } from 'react';
 
 type JobDetailProp = {
-    item: DSCongViecTheoTen
-    onLogin?: () => void;
-    maCongViec?: string;
-}
+  item: DSCongViecTheoTen;
+  onLogin?: () => void;
+  maCongViec?: string;
+};
 
-export default function JobDetailContentRight( {item , onLogin, maCongViec}: JobDetailProp ) {
+export default function JobDetailContentRight({
+  item,
+  onLogin,
+  maCongViec,
+}: JobDetailProp) {
+  const dispatch: AppDispatch = useDispatch();
+  const [ordered, setOrdered] = useState(false);
 
-    const dispatch: AppDispatch = useDispatch();
+  const packageFeatures = useMemo(
+    () => item.congViec.moTaNgan.split('\r\n').filter(Boolean),
+    [item.congViec.moTaNgan],
+  );
 
-    const [ordered, setOrdered] = useState(false);
+  const { data: currentUser } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector((state: RootState) => state.thueCongViec);
 
-    const packageFeatures = item.congViec.moTaNgan.split("\r\n")
-
-    const {data: currentUser} = useSelector((state: RootState) => state.auth);
-
-    const handlePayment = async () => {
-        if(!currentUser){
-            onLogin?.()
-            return;
-        }
-        const payload = {
-            maCongViec: Number(maCongViec),
-            maNguoiThue: currentUser?.user?.id,
-            ngayThue: new Date().toLocaleDateString('vi-VN'),
-            hoanThanh: true
-        }
-
-        try{
-            await dispatch(thueCongViecService(payload)).unwrap()
-
-            alert("🎉 Thuê công việc thành công!");
-            setOrdered(true);
-
-
-        }catch{
-            alert("❌ Thuê công việc thất bại");
-        }
-
+  const handlePayment = async () => {
+    if (!currentUser) {
+      onLogin?.();
+      return;
     }
 
-    return (
-        <>
-            <div className="overflow-hidden rounded-2xl border border-[#dadbdd] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
-                <div className="grid grid-cols-3 border-b border-[#e4e5e7] text-center text-[20px] font-semibold">
-                    <button className="border-b-[3px] border-[#222325] px-4 py-5 text-[#222325]">Basic</button>
-                    <button className="border-l border-r border-[#e4e5e7] px-4 py-5 text-[#74767e]">Standard</button>
-                    <button className="px-4 py-5 text-[#74767e]">Premium</button>
-                </div>
+    const payload = {
+      maCongViec: Number(maCongViec),
+      maNguoiThue: currentUser.user.id,
+      ngayThue: new Date().toLocaleDateString('vi-VN'),
+      hoanThanh: true,
+    };
 
-                <div className="p-7">
-                    <div className="flex items-start justify-between gap-4">
-                        <h3 className="max-w-62.5 text-[28px] font-bold leading-[1.35] text-[#222325]">
-                            {item.congViec.tenCongViec}
-                        </h3>
-                        <span className="text-[40px] font-bold leading-none text-[#222325]">{`$${item.congViec.giaTien}`}</span>
-                    </div>
+    try {
+      await dispatch(thueCongViecService(payload)).unwrap();
+      setOrdered(true);
+      alert('🎉 Thuê công việc thành công!');
+    } catch {
+      alert('❌ Thuê công việc thất bại');
+    }
+  };
 
-                    <p className="mt-5 text-[18px] leading-8 text-[#62646a]">
-                        Consultation for UI prototyping of your software or web application.
-                    </p>
+  return (
+    <>
+      <div className="overflow-hidden rounded-2xl border border-[#dadbdd] bg-white shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
+        <div className="grid grid-cols-3 border-b border-[#e4e5e7] text-center text-[20px] font-semibold">
+          <button className="border-b-[3px] border-[#222325] px-4 py-5 text-[#222325]">Basic</button>
+          <button className="border-l border-r border-[#e4e5e7] px-4 py-5 text-[#74767e]">Standard</button>
+          <button className="px-4 py-5 text-[#74767e]">Premium</button>
+        </div>
 
-                    <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-[17px] font-semibold text-[#222325]">
-                        <div className="flex items-center gap-2">
-                            <Clock3 className="h-5 w-5" />
-                            <span>4-day delivery</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <RefreshCw className="h-5 w-5" />
-                            <span>Unlimited Revisions</span>
-                        </div>
-                    </div>
+        <div className="p-7">
+          <div className="flex items-start justify-between gap-4">
+            <h3 className="max-w-62.5 text-[28px] font-bold leading-[1.35] text-[#222325]">
+              {item.congViec.tenCongViec}
+            </h3>
+            <span className="text-[40px] font-bold leading-none text-[#222325]">
+              {`$${item.congViec.giaTien}`}
+            </span>
+          </div>
 
-                    <div className="mt-6 space-y-3">
-                        {packageFeatures.map((item) => (
-                            <div key={item} className="flex items-start gap-3 text-[17px] text-[#62646a]">
-                                <Check className="mt-1 h-4 w-4 shrink-0 text-[#222325]" />
-                                <span>{item}</span>
-                            </div>
-                        ))}
-                    </div>
+          <p className="mt-5 text-[18px] leading-8 text-[#62646a]">
+            Consultation for UI prototyping of your software or web application.
+          </p>
 
-                    <button disabled={ordered} onClick={handlePayment} className={`mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[#222325] px-6 py-4 text-[18px] font-semibold text-white transition hover:bg-black ${ordered ? `disabled:${ordered} opacity-50` : ''}`}>
-                        Request to order
-                    </button>
-
-                    <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#dadbdd] bg-white px-6 py-4 text-[18px] font-semibold text-[#404145] transition hover:bg-[#f5f5f5]">
-                        Contact me
-                        <ChevronDown className="h-5 w-5" />
-                    </button>
-                </div>
+          <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-[17px] font-semibold text-[#222325]">
+            <div className="flex items-center gap-2">
+              <Clock3 className="h-5 w-5" />
+              <span>4-day delivery</span>
             </div>
-
-            <div className="mt-6 rounded-2xl border border-[#e4e5e7] bg-white p-6 shadow-[0_1px_6px_rgba(0,0,0,0.04)]">
-                <div className="flex items-start gap-4">
-                    <img
-                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
-                        alt="seller"
-                        className="h-12 w-12 rounded-full object-cover"
-                    />
-                    <div>
-                        <h3 className="text-[20px] font-bold text-[#222325]">Need flexibility when hiring?</h3>
-                        <p className="mt-2 text-[17px] leading-7 text-[#62646a]">
-                            Hire by the hour, ideal for long-term projects with flexible hours and weekly payments.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mt-5 flex items-center justify-between gap-4 border-t border-[#e4e5e7] pt-5">
-                    <span className="text-[22px] font-bold text-[#222325]">$25/hour</span>
-                    <button className="font-semibold text-[#222325] underline underline-offset-4 transition hover:text-[#1dbf73]">
-                        Request hourly offer
-                    </button>
-                </div>
+            <div className="flex items-center gap-2">
+              <RefreshCw className="h-5 w-5" />
+              <span>Unlimited Revisions</span>
             </div>
+          </div>
 
-            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-[#d7f5e7] bg-[#f6fff9] p-4 text-[#222325]">
-                <BadgeCheck className="h-5 w-5 text-[#1dbf73]" />
-                <p className="text-[15px] leading-6">
-                    Secure checkout, milestone-based collaboration, and clear package scope.
-                </p>
-            </div>
-        </>
-    );
+          <div className="mt-6 space-y-3">
+            {packageFeatures.map((feature) => (
+              <div key={feature} className="flex items-start gap-3 text-[17px] text-[#62646a]">
+                <Check className="mt-1 h-4 w-4 shrink-0 text-[#222325]" />
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            disabled={ordered || loading}
+            onClick={handlePayment}
+            className={`mt-8 inline-flex w-full items-center justify-center rounded-xl bg-[#222325] px-6 py-4 text-[18px] font-semibold text-white transition hover:bg-black ${
+              ordered || loading ? 'cursor-not-allowed opacity-50' : ''
+            }`}
+          >
+            {ordered ? 'Ordered' : 'Request to order'}
+          </button>
+
+          <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#dadbdd] bg-white px-6 py-4 text-[18px] font-semibold text-[#404145] transition hover:bg-[#f5f5f5]">
+            Contact me
+            <ChevronDown className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-[#e4e5e7] bg-white p-6 shadow-[0_1px_6px_rgba(0,0,0,0.04)]">
+        <div className="flex items-start gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
+            alt="seller"
+            className="h-12 w-12 rounded-full object-cover"
+          />
+          <div>
+            <h3 className="text-[20px] font-bold text-[#222325]">Need flexibility when hiring?</h3>
+            <p className="mt-2 text-[17px] leading-7 text-[#62646a]">
+              Hire by the hour, ideal for long-term projects with flexible hours and weekly payments.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 flex items-center gap-3 rounded-2xl border border-[#d7f5e7] bg-[#f6fff9] p-4 text-[#222325]">
+        <BadgeCheck className="h-5 w-5 text-[#1dbf73]" />
+        <p className="text-[15px] leading-6">
+          Secure checkout, milestone-based collaboration, and clear package scope.
+        </p>
+      </div>
+    </>
+  );
 }

@@ -1,46 +1,57 @@
-import type {CongViecDaThue, InitState, TApiResponse} from "@types";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {apiConfig} from "@services/apiConfig.ts";
-import type {AxiosError} from "axios";
+import type {
+  AppError,
+  CongViecDaThue,
+  InitState,
+  TApiResponse,
+} from '@types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { apiConfig } from '@services/apiConfig';
+import { normalizeApiError } from '@utils/normalizeApiError';
 
 const initialState: InitState<CongViecDaThue[]> = {
-    loading: false,
-    data: null,
-    error: null,
-}
+  loading: false,
+  data: null,
+  error: null,
+};
 
-export const layDanhSachDaThueService = createAsyncThunk(
-    "searchJob/layDanhSachDaThue",
-    async (_, thunkAPI)=>{
-        try {
-            const response = await apiConfig.get<TApiResponse<CongViecDaThue[]>>("thue-cong-viec/lay-danh-sach-da-thue")
+export const layDanhSachDaThueService = createAsyncThunk<
+  CongViecDaThue[],
+  void,
+  { rejectValue: AppError }
+>('order/fetchRentedJobs', async (_, { rejectWithValue }) => {
+  try {
+    const response = await apiConfig.get<TApiResponse<CongViecDaThue[]>>(
+      'thue-cong-viec/lay-danh-sach-da-thue',
+    );
 
-            return response.data.content ?? response.data;
-        }catch (error){
-            return thunkAPI.rejectWithValue( error || "Không thể tải danh sách bình luận công việc" );
-        }
-    }
-)
+    return response.data.content ?? [];
+  } catch (error) {
+    return rejectWithValue(normalizeApiError(error));
+  }
+});
 
 const layDanhSachDaThueSlice = createSlice({
-    name: "layDanhSachDaThue",
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(layDanhSachDaThueService.pending, (state)=> {
-            state.loading = true
-        })
+  name: 'layDanhSachDaThue',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(layDanhSachDaThueService.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
 
-        builder.addCase(layDanhSachDaThueService.fulfilled, (state, action)=> {
-            state.loading = false
-            state.data = action.payload as CongViecDaThue[]
-        })
+    builder.addCase(layDanhSachDaThueService.fulfilled, (state, action) => {
+      state.loading = false;
+      state.data = action.payload;
+      state.error = null;
+    });
 
-        builder.addCase(layDanhSachDaThueService.rejected, (state, action)=> {
-            state.loading = false
-            state.error = action.payload as AxiosError<never>
-        })
-    }
-})
+    builder.addCase(layDanhSachDaThueService.rejected, (state, action) => {
+      state.loading = false;
+      state.error =
+        action.payload ?? { message: 'Không thể tải danh sách công việc đã thuê.' };
+    });
+  },
+});
 
 export default layDanhSachDaThueSlice.reducer;

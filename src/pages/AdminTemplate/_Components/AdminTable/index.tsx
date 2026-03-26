@@ -1,67 +1,36 @@
+type TableRow = Record<string, string | number>;
 
 type TAdminTable = {
-    tableHeaders: string[]
-}
+  tableHeaders: string[];
+  rows: TableRow[];
+};
 
-export default function AdminTable({tableHeaders}: TAdminTable) {
+export default function AdminTable({ tableHeaders, rows }: TAdminTable) {
+  return (
+    <div className="mt-8 rounded-xl bg-white p-6 shadow">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b text-left">
+            {tableHeaders.map((header) => (
+              <th key={header} className="py-3 capitalize">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
 
-    const data = [
-        {id:1,name:"Nguyen Van A",email:"a@gmail.com",role:"User"},
-        {id:2,name:"Tran Van B",email:"b@gmail.com",role:"Admin"},
-    ];
-
-    return (
-        <div className="bg-white rounded-xl shadow p-6 mt-8">
-
-            <table className="w-full">
-
-                <thead>
-                <tr className="text-left border-b">
-                    {tableHeaders.map(header => (
-                        <th className="py-3">{header}</th>
-                    ))}
-                    {/*<th className="py-3">ID</th>*/}
-                    {/*<th>Name</th>*/}
-                    {/*<th>Email</th>*/}
-                    {/*<th>Role</th>*/}
-                    {/*<th>Actions</th>*/}
-
-                </tr>
-                </thead>
-
-                <tbody>
-
-                {data.map((item) => (
-                    <tr
-                        key={item.id}
-                        className="border-b hover:bg-gray-50"
-                    >
-
-                        <td className="py-3">{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.email}</td>
-                        <td>{item.role}</td>
-
-                        <td className="flex gap-2 mt-2">
-
-                            <button className="px-3 py-1 bg-blue-500 text-white rounded">
-                                Edit
-                            </button>
-
-                            <button className="px-3 py-1 bg-red-500 text-white rounded">
-                                Delete
-                            </button>
-
-                        </td>
-
-                    </tr>
-                ))}
-
-                </tbody>
-
-            </table>
-
-        </div>
-    );
-
+        <tbody>
+          {rows.map((item, index) => (
+            <tr key={index} className="border-b hover:bg-gray-50">
+              {tableHeaders.map((header) => (
+                <td key={header} className="py-3">
+                  {String(item[header] ?? '')}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

@@ -1,46 +1,41 @@
-import Navbar from "@components/Navbar";
-import TopCategoryBar from "@pages/JobListTemplate/_Components/TopCategoryBar";
-import {useNavigate} from "react-router-dom";
-import {useState} from "react";
-import ProfileSidebar from "@pages/ProfileTemplate/_Component/ProfileSidebar";
-import GigManagement from "@pages/ProfileTemplate/_Component/GigManagement";
+import Navbar from '@components/Navbar';
+import TopCategoryBar from '@pages/JobListTemplate/_Components/TopCategoryBar';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import ProfileSidebar from '@pages/ProfileTemplate/_Component/ProfileSidebar';
+import GigManagement from '@pages/ProfileTemplate/_Component/GigManagement';
+import type { JSX } from 'react';
 
-function ProfileTemplate() {
+function ProfileTemplate(): JSX.Element {
+  const [inputValue, setInputValue] = useState('');
+  const navigate = useNavigate();
 
-    const [inputValue, setInputValue] = useState<string>("");
+  const handleSearch = (value: string) => {
+    navigate(`/danh-sach-cong-viec?keyword=${encodeURIComponent(value.trim())}`);
+  };
 
-    const navigate = useNavigate();
+  return (
+    <>
+      <Navbar
+        variant="JOB"
+        inputValue={inputValue}
+        onChangeInput={setInputValue}
+        onSearch={handleSearch}
+      />
+      <TopCategoryBar />
+      <section className="min-h-screen bg-gray-100 py-8">
+        <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 px-6 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <ProfileSidebar />
+          </div>
 
-    const handleSearch = (value: string) => {
-        navigate(`/danh-sach-cong-viec?keyword=${encodeURIComponent(value.trim())}`);
-    };
-
-    return (
-        <>
-            <Navbar
-                variant="JOB"
-                inputValue={inputValue}
-                onChangeInput={setInputValue}
-                onSearch={handleSearch}
-            />
-            <TopCategoryBar/>
-            <section className="bg-gray-100 min-h-screen py-8">
-                <div className="mx-auto max-w-[1200px] px-6 grid grid-cols-12 gap-6">
-
-                    {/* LEFT SIDEBAR */}
-                    <div className="col-span-4">
-                        <ProfileSidebar />
-                    </div>
-
-                    {/* RIGHT CONTENT */}
-                    <div className="col-span-8">
-                        <GigManagement />
-                    </div>
-
-                </div>
-            </section>
-        </>
-    );
+          <div className="lg:col-span-8">
+            <GigManagement />
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
 
 export default ProfileTemplate;

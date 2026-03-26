@@ -164,7 +164,7 @@ export type BinhLuan = {
   avatar: string;
 };
 
-export type BinhLuanRequst = {
+export type BinhLuanPayload = {
   maCongviec: number;
   maNguoiBinhLuan: number | undefined;
   ngayBinhLuan: string;

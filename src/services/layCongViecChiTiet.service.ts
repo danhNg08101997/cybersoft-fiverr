@@ -1,46 +1,63 @@
-import type {DSCongViecTheoTen, InitState, TApiResponse} from "@types";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {apiConfig} from "@services/apiConfig.ts";
-import type {AxiosError} from "axios";
+import type {
+  AppError,
+  DSCongViecTheoTen,
+  InitState,
+  TApiResponse,
+} from '@types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { apiConfig } from '@services/apiConfig';
+import { normalizeApiError } from '@utils/normalizeApiError';
 
 const initialState: InitState<DSCongViecTheoTen[]> = {
-    loading: false,
-    data: null,
-    error: null,
-}
+  loading: false,
+  data: null,
+  error: null,
+};
 
-export const layCongViecChiTietService = createAsyncThunk(
-    "searchJob/layCongViecChiTietService",
-    async (maCongViec:string, thunkAPI) => {
-        try{
-            const maCongViecNo = Number(encodeURIComponent(maCongViec.trim()));
+export const layCongViecChiTietService = createAsyncThunk<
+  DSCongViecTheoTen[],
+  string,
+  { rejectValue: AppError }
+>('job/fetchDetail', async (maCongViec, { rejectWithValue }) => {
+  try {
+    const parsedId = Number(maCongViec.trim());
 
-            const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen[]>>(`cong-viec/lay-cong-viec-chi-tiet/${maCongViecNo}`);
-
-            return response.data.content ?? response.data;
-        }catch (error){
-            return thunkAPI.rejectWithValue( error || "Không thể tải chi tiết công việc" );
-        }
+    if (!parsedId) {
+      return rejectWithValue({ message: 'Mã công việc không hợp lệ.' });
     }
-)
+
+    const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen[]>>(
+      `cong-viec/lay-cong-viec-chi-tiet/${parsedId}`,
+    );
+
+    return response.data.content ?? [];
+  } catch (error) {
+    return rejectWithValue(normalizeApiError(error));
+  }
+});
 
 const layCongViecChiTietSlice = createSlice({
-    name: "layCongViecChiTiet",
-    initialState,
-    reducers:{},
-    extraReducers: (builder) => {
-        builder.addCase(layCongViecChiTietService.pending, (state) => {
-            state.loading = true;
-        })
-        builder.addCase(layCongViecChiTietService.fulfilled, (state, action) => {
-            state.loading = false;
-            state.data = action.payload as DSCongViecTheoTen[];
-        })
-        builder.addCase(layCongViecChiTietService.rejected, (state, action) => {
-            state.loading = true;
-            state.error = action.payload as AxiosError<never>
-        })
-    }
-})
+  name: 'layCongViecChiTiet',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(layCongViecChiTietService.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+
+    builder.addCase(layCongViecChiTietService.fulfilled, (state, action) => {
+      state.loading = false;
+      state.data = action.payload;
+      state.error = null;
+    });
+
+    builder.addCase(layCongViecChiTietService.rejected, (state, action) => {
+      state.loading = false;
+      state.error =
+        action.payload ?? { message: 'Không thể tải chi tiết công việc.' };
+    });
+  },
+});
 
 export default layCongViecChiTietSlice.reducer;

@@ -44,7 +44,7 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
 export default function TopCategoryBar() {
     const [activeKey, setActiveKey] = useState<string>("");
     const dispatch: AppDispatch = useDispatch();
-    const {data} = useSelector((state: RootState) => state.menuCongViecReducer);
+    const {data} = useSelector((state: RootState) => state.menuCongViec);
     const navigate = useNavigate();
 
     useEffect(() => {

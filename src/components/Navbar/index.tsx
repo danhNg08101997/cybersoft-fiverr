@@ -38,7 +38,7 @@ export default function Navbar({
 
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+    const {data: currentUser} = useSelector((state: RootState) => state.auth);
 
     const trimmedHomeQuery = useMemo(() => q.trim(), [q]);
     const trimmedJobListQuery = useMemo(

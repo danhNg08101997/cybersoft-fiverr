@@ -1,21 +1,38 @@
-import axios, {type InternalAxiosRequestConfig} from 'axios';
-
-const TOKEN_CYBERSOFT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA5MCIsIkhldEhhblN0cmluZyI6IjI5LzA1LzIwMjYiLCJIZXRIYW5UaW1lIjoiMTc4MDAxMjgwMDAwMCIsIm5iZiI6MTc1MzAzMDgwMCwiZXhwIjoxNzgwMTYwNDAwfQ.KkGRtLpEsgoM4M_TapjOZIzvAwbay3QvXIwwN8XUqWk"
+import axios, { type InternalAxiosRequestConfig } from "axios";
+import { env } from "@config/env";
+import { clearStoredUser, getAccessToken } from "@utils/storage";
 
 export const apiConfig = axios.create({
-    baseURL: 'https://fiverrnew.cybersoft.edu.vn/api/',
-})
+  baseURL: env.apiBaseUrl,
+  timeout: 15000,
+});
 
-apiConfig.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-    const user = localStorage.getItem("USER_LOGIN")
+apiConfig.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const accessToken = getAccessToken();
 
-    const accessToken = user ? JSON.parse(user).token : "";
+    config.headers = config.headers ?? {};
+    config.headers.TokenCybersoft = env.cybersoftToken;
 
-    config.headers.token = accessToken;
-    config.headers.Authorization = `Bearer ${accessToken}`;
-    config.headers.TokenCybersoft = TOKEN_CYBERSOFT;
+    if (accessToken) {
+      config.headers.token = accessToken;
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
 
     return config;
+  },
+  (error) => Promise.reject(error),
+);
 
-})
+apiConfig.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const statusCode = error?.response?.status;
 
+    if (statusCode === 401) {
+      clearStoredUser();
+    }
+
+    return Promise.reject(error);
+  },
+);

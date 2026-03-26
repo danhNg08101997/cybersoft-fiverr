@@ -14,7 +14,7 @@ export default function RegisterComponent(props: AuthModalProps): React.JSX.Elem
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const {loading, error} = useSelector((state: RootState) => state.registerReducer);
+    const {loading, error} = useSelector((state: RootState) => state.register);
 
 
     const handleCancel = (): void => {

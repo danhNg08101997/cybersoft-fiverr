@@ -22,9 +22,9 @@ export default function JobListContent({ keyword="", inputValue="", maChiTietLoa
 
     const dispatch: AppDispatch = useDispatch();
 
-    const { data: searchJob } = useSelector( (state: RootState) => state.searchJobReducer );
+    const { data: searchJob } = useSelector( (state: RootState) => state.searchJob );
 
-    const { data: chiTietLoaiCongViec } = useSelector( (state: RootState) => state.layChiTietLoaiCongViecReducer );
+    const { data: chiTietLoaiCongViec } = useSelector( (state: RootState) => state.layChiTietLoaiCongViec );
 
     const jobs: DSCongViecTheoTen[] = useMemo(() => {
         if (maChiTietLoai !== "" && keyword === "") {

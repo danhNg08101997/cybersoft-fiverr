@@ -19,7 +19,7 @@ export default function JobDetailContentRight( {item , onLogin, maCongViec}: Job
 
     const packageFeatures = item.congViec.moTaNgan.split("\r\n")
 
-    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+    const {data: currentUser} = useSelector((state: RootState) => state.auth);
 
     const handlePayment = async () => {
         if(!currentUser){

@@ -28,13 +28,13 @@ export default function JobDetailTemplate() {
     const keyword = searchParams.get("keyword")?.trim() ?? "";
 
     const { data, loading } = useSelector(
-        (state: RootState) => state.layCongViecChiTietReducer
+        (state: RootState) => state.layCongViecChiTiet
     );
 
-    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+    const {data: currentUser} = useSelector((state: RootState) => state.auth);
 
 
-    const {data: binhLuan} = useSelector((state: RootState) => state.layBinhLuanTheoCongViecReducer)
+    const {data: binhLuan} = useSelector((state: RootState) => state.layBinhLuanTheoCongViec)
 
     const dispatch: AppDispatch = useDispatch();
 

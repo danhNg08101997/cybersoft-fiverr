@@ -58,7 +58,7 @@ function GigItem({item}:TCongViecDaThue) {
 export default function GigManagement() {
     const dispatch = useDispatch<AppDispatch>();
 
-    const {data: thueCongViec} = useSelector((state: RootState) => state.layDanhSachDaThueReducer)
+    const {data: thueCongViec} = useSelector((state: RootState) => state.layDanhSachDaThue)
     console.log("🚀 ~ GigManagement ~ thueCongViec: ", thueCongViec);
 
     useEffect(() => {

@@ -76,7 +76,7 @@ export default function JobTypeContent() {
     );
 
     const { data, loading } = useSelector(
-        (state: RootState) => state.layLoaiCongViecReducer
+        (state: RootState) => state.layLoaiCongViec
     );
 
     useEffect(() => {

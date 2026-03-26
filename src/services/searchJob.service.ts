@@ -1,46 +1,59 @@
-import type {DSCongViecTheoTen, InitState, TApiResponse} from "@types";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {apiConfig} from "@services/apiConfig.ts";
-import type {AxiosError} from "axios";
+import type {
+  AppError,
+  DSCongViecTheoTen,
+  InitState,
+  TApiResponse,
+} from '@types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { apiConfig } from '@services/apiConfig';
+import { normalizeApiError } from '@utils/normalizeApiError';
 
 const initialState: InitState<DSCongViecTheoTen[]> = {
-    loading: false,
-    data: null,
-    error: null,
-}
+  loading: false,
+  data: null,
+  error: null,
+};
 
-export const searchJobService = createAsyncThunk(
-    "searchJob/searchJobService",
-    async (tenCongViec:string , thunkAPI) => {
-        try{
-            const keyword = encodeURIComponent(tenCongViec.trim());
+export const searchJobService = createAsyncThunk<
+  DSCongViecTheoTen[],
+  string,
+  { rejectValue: AppError }
+>('searchJob/fetchByName', async (tenCongViec, { rejectWithValue }) => {
+  try {
+    const keyword = encodeURIComponent(tenCongViec.trim());
 
-            const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen[]>>(`cong-viec/lay-danh-sach-cong-viec-theo-ten/${keyword}`);
+    const response = await apiConfig.get<TApiResponse<DSCongViecTheoTen[]>>(
+      `cong-viec/lay-danh-sach-cong-viec-theo-ten/${keyword}`,
+    );
 
-            return response.data.content ?? response.data;
-        }catch (error){
-            return thunkAPI.rejectWithValue( error || "Không thể tải danh sách công việc" );
-        }
-    }
-)
+    return response.data.content ?? [];
+  } catch (error) {
+    return rejectWithValue(normalizeApiError(error));
+  }
+});
 
 const searchJobSlice = createSlice({
-    name: "searchJob",
-    initialState,
-    reducers:{},
-    extraReducers:(builder)=>{
-        builder.addCase(searchJobService.pending,(state)=>{
-            state.loading = true
-        })
-        builder.addCase(searchJobService.fulfilled,(state,action)=>{
-            state.loading = false;
-            state.data = action.payload as DSCongViecTheoTen[]
-        })
-        builder.addCase(searchJobService.rejected,(state, action)=>{
-            state.loading = false;
-            state.error = action.payload as AxiosError<never>
-        })
-    }
-})
+  name: 'searchJob',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(searchJobService.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(searchJobService.fulfilled, (state, action) => {
+      state.loading = false;
+      state.data = action.payload;
+      state.error = null;
+    });
+    builder.addCase(searchJobService.rejected, (state, action) => {
+      state.loading = false;
+      state.error =
+        action.payload ?? {
+          message: 'Không thể tải danh sách công việc',
+        };
+    });
+  },
+});
 
 export default searchJobSlice.reducer;

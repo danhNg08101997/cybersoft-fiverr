@@ -32,7 +32,11 @@
       "@pages/*": ["src/pages/*"],
       "@assets/*": ["src/assets/*"],
       "@store/*": ["src/store/*"],
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@config/*": ["src/config/*"],
+      "@utils/*": ["src/utils/*"],
+      "@guards/*": ["src/components/guards/*"],
+      "@shared/*": ["src/components/shared/*"]
     }
   },
 

@@ -3,7 +3,7 @@ import type {RootState} from "@store/index.ts";
 
 export default function ProfileSidebar() {
 
-    const {data: currentUser} = useSelector((state: RootState) => state.loginReducer);
+    const {data: currentUser} = useSelector((state: RootState) => state.auth);
 
 
     return (

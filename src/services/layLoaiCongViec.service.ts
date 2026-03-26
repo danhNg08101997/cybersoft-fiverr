@@ -1,50 +1,56 @@
-import type {InitState, MenuCongViec, TApiResponse} from "@types";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {apiConfig} from "@services/apiConfig.ts";
-import type {AxiosError} from "axios";
+import type { AppError, InitState, MenuCongViec, TApiResponse } from '@types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { apiConfig } from '@services/apiConfig';
+import { normalizeApiError } from '@utils/normalizeApiError';
 
-const initialState: InitState<MenuCongViec[]> ={
-    loading: false,
-    data: null,
-    error: null,
-}
+const initialState: InitState<MenuCongViec[]> = {
+  loading: false,
+  data: null,
+  error: null,
+};
 
-export const layLoaiCongViecService = createAsyncThunk(
-    "searchJob/layLoaiCongViecService",
-    async (maLoaiCongViec:string,thunkAPI) => {
-        try {
-            const maLoaiCongViecNo = Number(encodeURIComponent(maLoaiCongViec.trim()));
+export const layLoaiCongViecService = createAsyncThunk<
+  MenuCongViec[],
+  string,
+  { rejectValue: AppError }
+>('jobType/fetchById', async (maLoaiCongViec, { rejectWithValue }) => {
+  try {
+    const id = Number(maLoaiCongViec.trim());
 
-            const response = await apiConfig.get<TApiResponse<MenuCongViec[]>>(`cong-viec/lay-chi-tiet-loai-cong-viec/${maLoaiCongViecNo}`)
+    const response = await apiConfig.get<TApiResponse<MenuCongViec[]>>(
+      `cong-viec/lay-chi-tiet-loai-cong-viec/${id}`,
+    );
 
-            return response.data.content ?? response.data;
-        }catch (error){
-            return thunkAPI.rejectWithValue( error || "Không thể tải danh sách loại công việc" );
-        }
-    }
-)
+    return response.data.content ?? [];
+  } catch (error) {
+    return rejectWithValue(normalizeApiError(error));
+  }
+});
 
 const layLoaiCongViecSlice = createSlice({
-    name: "layLoaiCongViec",
-    initialState,
-    reducers:{},
-    extraReducers:(builder)=>{
-        builder.addCase(layLoaiCongViecService.pending,(state)=>{
-            state.loading = true;
-            state.error = null;
-        })
+  name: 'layLoaiCongViec',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(layLoaiCongViecService.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
 
-        builder.addCase(layLoaiCongViecService.fulfilled, (state, action) => {
-            state.loading = false;
-            state.data = action.payload as MenuCongViec[];
-            state.error = null;
-        })
+    builder.addCase(layLoaiCongViecService.fulfilled, (state, action) => {
+      state.loading = false;
+      state.data = action.payload;
+      state.error = null;
+    });
 
-        builder.addCase(layLoaiCongViecService.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload as AxiosError
-        })
-    }
-})
+    builder.addCase(layLoaiCongViecService.rejected, (state, action) => {
+      state.loading = false;
+      state.error =
+        action.payload ?? {
+          message: 'Không thể tải danh sách loại công việc',
+        };
+    });
+  },
+});
 
 export default layLoaiCongViecSlice.reducer;

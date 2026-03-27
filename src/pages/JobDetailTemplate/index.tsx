@@ -13,12 +13,12 @@ import { layCongViecChiTietService } from '@services/layCongViecChiTiet.service'
 import { layBinhLuanTheoCongViecService } from '@services/layBinhLuanTheoCongViec.service';
 import TextArea from 'antd/es/input/TextArea';
 import { Button, Form, type FormProps } from 'antd';
-import type { BinhLuanRequst } from '@types';
+import type { BinhLuanPayload } from '@types';
 import { binhLuanService } from '@services/binhLuan.service';
 import AppLoader from '@shared/AppLoader';
 
 export default function JobDetailTemplate() {
-  const [form] = Form.useForm<BinhLuanRequst>();
+  const [form] = Form.useForm<BinhLuanPayload>();
   const [searchParams] = useSearchParams();
   const [isLoginModal, setIsLoginModal] = useState(false);
 
@@ -57,7 +57,7 @@ export default function JobDetailTemplate() {
     navigate(`/danh-sach-cong-viec?keyword=${encodeURIComponent(value.trim())}`);
   };
 
-  const handleAddComment: FormProps<BinhLuanRequst>['onFinish'] = async (values) => {
+  const handleAddComment: FormProps<BinhLuanPayload>['onFinish'] = async (values) => {
     if (!currentUser) {
       setIsLoginModal(true);
       return;
@@ -151,7 +151,7 @@ export default function JobDetailTemplate() {
                     </span>
                   </div>
 
-                  <Form<BinhLuanRequst> form={form} onFinish={handleAddComment} layout="vertical">
+                  <Form<BinhLuanPayload> form={form} onFinish={handleAddComment} layout="vertical">
                     <Form.Item
                       name="noiDung"
                       rules={[{ required: true, message: 'Vui lòng nhập nội dung bình luận.' }]}

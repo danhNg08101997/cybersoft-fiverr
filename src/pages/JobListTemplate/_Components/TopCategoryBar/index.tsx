@@ -1,35 +1,46 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
-import type {MenuProps} from "antd";
-import {Dropdown, Menu} from "antd";
-import type {DsNhomChiTietLoai} from "@types";
-import type {AppDispatch, RootState} from "@store/index.ts";
-import {useDispatch, useSelector} from "react-redux";
-import {menuCongViecService} from "@services/menuCongViec.service.ts";
-import {NavLink, useNavigate} from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { MenuProps } from 'antd';
+import { Dropdown, Menu } from 'antd';
+import type { DsNhomChiTietLoai } from '@types';
+import type { AppDispatch, RootState } from '@store/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { menuCongViecService } from '@services/menuCongViec.service';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
-
+function MegaOverlay({ groups }: { groups: DsNhomChiTietLoai[] }) {
     const navigate = useNavigate();
 
-    const handleGoToDetailType = (maChiTietLoai:number, tenChiTiet:string) => {
-        navigate(`/danh-sach-cong-viec?maChiTietLoai=${encodeURIComponent(maChiTietLoai)}&tenChiTiet=${encodeURIComponent(tenChiTiet)}`);
-    }
+    const handleGoToDetailType = (
+        maChiTietLoai: number,
+        tenChiTiet: string,
+        event: React.MouseEvent<HTMLAnchorElement>,
+    ) => {
+        event.preventDefault();
+        navigate(
+            `/danh-sach-cong-viec?maChiTietLoai=${encodeURIComponent(
+                maChiTietLoai,
+            )}&tenChiTiet=${encodeURIComponent(tenChiTiet)}`,
+        );
+    };
+
     return (
         <div className="fiverr-mega">
             <div className="fiverr-mega__inner">
                 <div className="fiverr-mega__grid">
-                    {groups.map((g) => (
-                        <div key={g.id} className="fiverr-mega__col">
-                            <div className="fiverr-mega__title">{g.tenNhom}</div>
+                    {groups.map((group) => (
+                        <div key={group.id} className="fiverr-mega__col">
+                            <div className="fiverr-mega__title">{group.tenNhom}</div>
                             <div className="fiverr-mega__list">
-                                {g.dsChiTietLoai.map((it) => (
+                                {group.dsChiTietLoai.map((item) => (
                                     <a
-                                        key={it.id}
-                                        href=""
-                                        className={`fiverr-mega__item ${!it.tenChiTiet ? "is-link" : ""}`}
-                                        onClick={()=>handleGoToDetailType(it.id, it.tenChiTiet)}
+                                        key={item.id}
+                                        href="/"
+                                        className={`fiverr-mega__item ${!item.tenChiTiet ? 'is-link' : ''}`}
+                                        onClick={(event) =>
+                                            handleGoToDetailType(item.id, item.tenChiTiet, event)
+                                        }
                                     >
-                                        <span>{it.tenChiTiet}</span>
+                                        <span>{item.tenChiTiet}</span>
                                     </a>
                                 ))}
                             </div>
@@ -42,47 +53,54 @@ function MegaOverlay({groups}: { groups: DsNhomChiTietLoai[] }) {
 }
 
 export default function TopCategoryBar() {
-    const [activeKey, setActiveKey] = useState<string>("");
+    const [activeKey, setActiveKey] = useState<string>('');
     const dispatch: AppDispatch = useDispatch();
-    const {data} = useSelector((state: RootState) => state.menuCongViec);
     const navigate = useNavigate();
 
+    const { data } = useSelector((state: RootState) => state.menuCongViec);
+
     useEffect(() => {
-        dispatch(menuCongViecService())
-    }, [dispatch])
+        dispatch(menuCongViecService());
+    }, [dispatch]);
 
-    const handleJobTypeCode = useCallback((maLoaiCongViec?: number) => {
-        if (!maLoaiCongViec) return;
-        navigate(`/danh-sach-cong-viec-va-loai-cong-viec?maLoaiCongviec=${encodeURIComponent(maLoaiCongViec)}`);
+    const handleJobTypeCode = useCallback(
+        (maLoaiCongViec?: number) => {
+            if (!maLoaiCongViec) return;
+            navigate(
+                `/danh-sach-cong-viec-va-loai-cong-viec?maLoaiCongviec=${encodeURIComponent(
+                    maLoaiCongViec,
+                )}`,
+            );
+        },
+        [navigate],
+    );
 
-    }, [navigate]);
+    const items: MenuProps['items'] = useMemo(() => {
+        return data?.map((item) => {
+            const labelNode = (
+                <span className="fiverr-topnav__label">{item.tenLoaiCongViec}</span>
+            );
 
-    const items: MenuProps["items"] = useMemo(() => {
+            const firstMaLoaiCongViec = item.dsNhomChiTietLoai?.[0]?.maLoaiCongviec;
 
-        return data?.map((n) => {
-            const labelNode = (<span className="fiverr-topnav__label">{n.tenLoaiCongViec}</span>);
-            const firstMaLoaiCongViec = n.dsNhomChiTietLoai?.[0]?.maLoaiCongviec;
-
-            if (n.dsNhomChiTietLoai?.length) {
+            if (item.dsNhomChiTietLoai?.length) {
                 return {
-                    key: n.id,
+                    key: item.id,
                     label: (
                         <Dropdown
-                            trigger={["hover"]}
+                            trigger={['hover']}
                             placement="bottom"
-                            styles={{
-                                root: {
-                                    paddingTop: 0
-                                },
-                            }}
-                            popupRender={() => <MegaOverlay groups={n.dsNhomChiTietLoai!}/>}
-                            onOpenChange={(open) => setActiveKey(open ? String(n.id) : "")}
+                            styles={{ root: { paddingTop: 0 } }}
+                            popupRender={() => <MegaOverlay groups={item.dsNhomChiTietLoai} />}
+                            onOpenChange={(open) => setActiveKey(open ? String(item.id) : '')}
                         >
                             <NavLink
-                                to=""
-                                className={`fiverr-topnav__item ${activeKey === String(n.id) ? "is-active" : ""}`}
-                                onClick={(e) => {
-                                    e.preventDefault();
+                                to="/"
+                                className={`fiverr-topnav__item ${
+                                    activeKey === String(item.id) ? 'is-active' : ''
+                                }`}
+                                onClick={(event) => {
+                                    event.preventDefault();
                                     handleJobTypeCode(firstMaLoaiCongViec);
                                 }}
                             >
@@ -94,12 +112,16 @@ export default function TopCategoryBar() {
             }
 
             return {
-                key: n.id,
+                key: item.id,
                 label: (
-                    <NavLink to="" className="fiverr-topnav__item"  onClick={(e) => {
-                        e.preventDefault();
-                        handleJobTypeCode(firstMaLoaiCongViec);
-                    }}>
+                    <NavLink
+                        to="/"
+                        className="fiverr-topnav__item"
+                        onClick={(event) => {
+                            event.preventDefault();
+                            handleJobTypeCode(firstMaLoaiCongViec);
+                        }}
+                    >
                         {labelNode}
                     </NavLink>
                 ),

@@ -1,7 +1,7 @@
 import type {
   AppError,
   BinhLuan,
-  BinhLuanRequst,
+  BinhLuanPayload,
   InitState,
   TApiResponse,
 } from '@types';
@@ -17,7 +17,7 @@ const initialState: InitState<BinhLuan> = {
 
 export const binhLuanService = createAsyncThunk<
   BinhLuan,
-  BinhLuanRequst,
+  BinhLuanPayload,
   { rejectValue: AppError }
 >('comment/create', async (binhLuan, { rejectWithValue }) => {
   try {

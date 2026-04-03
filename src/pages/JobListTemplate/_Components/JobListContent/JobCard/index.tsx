@@ -2,22 +2,21 @@ import type { DSCongViecTheoTen } from '@types';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-type CongViecProps = {
+type congViecProps = {
     job: DSCongViecTheoTen;
 };
 
-export default function JobCard({ job }: CongViecProps) {
-    console.log("🚀 ~ JobCard ~ job: ", job);
+export default function JobCard({ job }: congViecProps) {
     const navigate = useNavigate();
 
     const sellerLevel = useMemo(() => {
-        const baseNumber = Number(job.id || job.CongViec.id || 1);
+        const baseNumber = Number(job.id || job.congViec.id || 1);
         return (baseNumber % 2) + 1;
-    }, [job.id, job.CongViec.id]);
+    }, [job.id, job.congViec.id]);
 
     const handleClickJobCard = () => {
         const params = new URLSearchParams();
-        params.set('maCongViec', String(job.CongViec.id));
+        params.set('macongViec', String(job.congViec.id));
         navigate(`/chi-tiet-cong-viec?${params.toString()}`);
     };
 
@@ -38,8 +37,8 @@ export default function JobCard({ job }: CongViecProps) {
         >
             <div className="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                 <img
-                    src={job.CongViec?.hinhAnh}
-                    alt={job.CongViec?.tenCongViec}
+                    src={job.congViec?.hinhAnh}
+                    alt={job.congViec?.tenCongViec}
                     className="h-full w-full object-cover transition duration-300 hover:scale-[1.02]"
                 />
             </div>
@@ -63,7 +62,7 @@ export default function JobCard({ job }: CongViecProps) {
                 </div>
 
                 <h3 className="mb-3 line-clamp-2 min-h-14 text-[17px] leading-7 text-gray-700">
-                    {job.CongViec?.tenCongViec}
+                    {job.congViec?.tenCongViec}
                 </h3>
 
                 <div className="mb-4 flex items-center gap-1 text-sm">
@@ -76,10 +75,10 @@ export default function JobCard({ job }: CongViecProps) {
                     </svg>
 
                     <span className="font-semibold text-[#ffb33e]">
-            {job.CongViec?.saoCongViec?.toFixed(1) || '5.0'}
+            {job.congViec?.saoCongViec?.toFixed(1) || '5.0'}
           </span>
 
-                    <span className="text-gray-400">({job.CongViec?.danhGia || 0})</span>
+                    <span className="text-gray-400">({job.congViec?.danhGia || 0})</span>
                 </div>
             </div>
 
@@ -100,7 +99,7 @@ export default function JobCard({ job }: CongViecProps) {
                         Starting at
                     </p>
                     <p className="text-[28px] font-medium text-gray-500">
-                        ${job.CongViec?.giaTien}
+                        ${job.congViec?.giaTien}
                     </p>
                 </div>
             </div>

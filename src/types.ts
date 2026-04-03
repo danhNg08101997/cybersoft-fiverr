@@ -128,7 +128,7 @@ export type CongViec = {
 
 export type DSCongViecTheoTen = {
   id: number;
-  CongViec: CongViec;
+  congViec: CongViec;
   tenLoaiCongViec: string;
   tenNhomChiTietLoai: string;
   tenChiTietLoai: string;

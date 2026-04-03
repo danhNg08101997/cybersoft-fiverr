@@ -22,7 +22,7 @@ export const registerService = createAsyncThunk<
 >('auth/register', async (user, { rejectWithValue }) => {
   try {
     const response = await apiConfig.post<TApiResponse<User>>(
-      'auth/signup',
+      'auth/sign-up',
       user,
     );
 

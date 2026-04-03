@@ -16,7 +16,7 @@ export default function JobCard({ job }: congViecProps) {
 
     const handleClickJobCard = () => {
         const params = new URLSearchParams();
-        params.set('macongViec', String(job.congViec.id));
+        params.set('maCongViec', String(job.congViec.id));
         navigate(`/chi-tiet-cong-viec?${params.toString()}`);
     };
 

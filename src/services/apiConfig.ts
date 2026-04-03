@@ -4,7 +4,7 @@ import { clearStoredUser, getAccessToken } from "@utils/storage";
 
 export const apiConfig = axios.create({
   baseURL: env.apiBaseUrl,
-  timeout: 15000,
+  // timeout: 15000,
 });
 
 apiConfig.interceptors.request.use(
@@ -12,7 +12,7 @@ apiConfig.interceptors.request.use(
     const accessToken = getAccessToken();
 
     config.headers = config.headers ?? {};
-    config.headers.TokenCybersoft = env.cybersoftToken;
+    // config.headers.TokenCybersoft = env.cybersoftToken;
 
     if (accessToken) {
       config.headers.token = accessToken;

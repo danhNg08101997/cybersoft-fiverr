@@ -165,9 +165,9 @@ export type BinhLuan = {
 };
 
 export type BinhLuanPayload = {
-  maCongviec: number;
-  maNguoiBinhLuan: number | undefined;
-  ngayBinhLuan: string;
+  maCongViec: number;
+  maNguoiBinhLuan: number;
+  // ngayBinhLuan: string;
   noiDung: string;
   saoBinhLuan: number;
 };

@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import JobBreadcrumbComponent from '@pages/JobDetailTemplate/_Components/JobBreadcrumb';
 import TopCategoryBar from '@pages/JobListTemplate/_Components/TopCategoryBar';
-import JobDetailContent from '@pages/JobDetailTemplate/_Components/JobDetailContent';
-import JobDetailContentRight from '@pages/JobDetailTemplate/_Components/JobDetailContent/JobDetailContentRight';
+import JobDetailContentLeft from '@pages/JobDetailTemplate/_Components/JobDetailContentLeft';
+import JobDetailContentRight from '@pages/JobDetailTemplate/_Components/JobDetailContentRight';
 import FooterHome from '@components/Footer';
 import { ChevronDown, Star } from 'lucide-react';
 import type { AppDispatch, RootState } from '@store/index';
@@ -64,9 +64,9 @@ export default function JobDetailTemplate() {
     }
 
     const payload = {
-      maCongviec: Number(maCongViec),
-      maNguoiBinhLuan: currentUser.user.id,
-      ngayBinhLuan: new Date().toLocaleDateString('vi-VN'),
+      maCongViec: Number(maCongViec),
+      maNguoiBinhLuan: currentUser.user.id ?? 0,
+      ngayBinhLuan: new Date(),
       noiDung: values.noiDung,
       saoBinhLuan: 5,
     };
@@ -125,10 +125,10 @@ export default function JobDetailTemplate() {
                 tenChiTietLoai={jobDetail.tenChiTietLoai}
               />
 
-              <JobDetailContent item={jobDetail} />
+              <JobDetailContentLeft item={jobDetail} />
 
               <section className="mt-14 border-t border-[#e4e5e7] pt-12">
-                <h2 className="text-[34px] font-bold text-[#222325] md:text-[40px]">
+                <h2 className="text-[24px] font-bold text-[#222325]">
                   Reviews
                 </h2>
 
@@ -192,7 +192,7 @@ export default function JobDetailTemplate() {
                 </div>
 
                 <section className="mt-14 border-t border-[#e4e5e7] pt-12">
-                  <h2 className="text-[34px] font-bold tracking-[-0.02em] text-[#222325] md:text-[40px]">
+                  <h2 className="text-[24px] font-bold tracking-[-0.02em] text-[#222325]">
                     FAQ
                   </h2>
 
@@ -206,7 +206,7 @@ export default function JobDetailTemplate() {
                         key={question}
                         className="flex w-full items-center justify-between gap-6 py-8 text-left transition hover:text-[#1dbf73]"
                       >
-                        <span className="text-[22px] font-medium leading-[1.45] text-[#62646a] md:text-[24px]">
+                        <span className="text-[18px] font-medium leading-[1.45] text-[#62646a]">
                           {question}
                         </span>
                         <ChevronDown className="h-6 w-6 shrink-0 text-[#74767e]" />

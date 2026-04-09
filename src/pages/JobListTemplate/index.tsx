@@ -4,7 +4,7 @@ import JobSearchHeader from '@pages/JobListTemplate/_Components/JobSearchHeader'
 import JobListContent from '@pages/JobListTemplate/_Components/JobListContent';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FooterHome from '@components/Footer';
-import Navbar from '@components/Navbar';
+import NavbarMainPage from "@components/Navbar/page.tsx";
 
 export default function JobList(): React.JSX.Element {
   const [searchParams] = useSearchParams();
@@ -30,7 +30,7 @@ export default function JobList(): React.JSX.Element {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar
+      <NavbarMainPage
         variant="JOB"
         inputValue={inputValue}
         onChangeInput={setInputValue}

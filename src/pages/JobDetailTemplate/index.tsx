@@ -1,4 +1,3 @@
-import Navbar from '@components/Navbar';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import JobBreadcrumbComponent from '@pages/JobDetailTemplate/_Components/JobBreadcrumb';
@@ -16,6 +15,7 @@ import { Button, Form, type FormProps } from 'antd';
 import type { BinhLuanPayload } from '@types';
 import { binhLuanService } from '@services/binhLuan.service';
 import AppLoader from '@shared/AppLoader';
+import NavbarMainPage from "@components/Navbar/page.tsx";
 
 export default function JobDetailTemplate() {
   const [form] = Form.useForm<BinhLuanPayload>();
@@ -104,7 +104,7 @@ export default function JobDetailTemplate() {
 
   return (
     <>
-      <Navbar
+      <NavbarMainPage
         variant="JOB"
         inputValue={inputValue}
         onChangeInput={setInputValue}

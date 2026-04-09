@@ -1,4 +1,4 @@
-import Navbar from '@components/Navbar';
+import Navbar from '@components/Navbar/index.backup.tsx';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import TopCategoryBar from '@pages/JobListTemplate/_Components/TopCategoryBar';

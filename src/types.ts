@@ -1,4 +1,3 @@
-import type { JSX, LazyExoticComponent } from "react";
 import * as React from "react";
 import type { Dayjs } from "dayjs";
 
@@ -13,14 +12,6 @@ export type InitState<T> = {
   error: AppError | null;
 };
 
-export type RouteElement = LazyExoticComponent<() => JSX.Element>;
-
-export type RouteType = {
-  path: string;
-  element: RouteElement;
-  nested?: RouteType[];
-};
-
 export type TApiResponse<T> = {
   statusCode?: number;
   message?: string;
@@ -30,6 +21,11 @@ export type TApiResponse<T> = {
 export type LoginPayload = {
   email: string;
   password: string;
+};
+
+export type LoginResponse = {
+  token: string;
+  user: User;
 };
 
 export type RegisterPayload = {
@@ -42,11 +38,6 @@ export type RegisterPayload = {
   role: "USER" | "ADMIN";
   skill?: string[];
   certification?: string[];
-};
-
-export type LoginResponse = {
-  token: string;
-  user: User;
 };
 
 export type AuthModalProps = {
@@ -87,11 +78,6 @@ export interface ServiceInterface {
   subtitle: string;
   img: string;
 }
-
-export type FooterCol = {
-  title: string;
-  items: Array<{ label: string; subLabel?: string }>;
-};
 
 export type MarketItem = {
   label: string;
@@ -167,7 +153,7 @@ export type BinhLuan = {
 export type BinhLuanPayload = {
   maCongViec: number;
   maNguoiBinhLuan: number;
-  // ngayBinhLuan: string;
+  ngayBinhLuan: Date;
   noiDung: string;
   saoBinhLuan: number;
 };

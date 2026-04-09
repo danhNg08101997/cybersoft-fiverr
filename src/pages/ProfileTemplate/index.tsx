@@ -1,10 +1,11 @@
-import Navbar from '@components/Navbar';
+// import Navbar from '@components/Navbar/index.backup.tsx';
 import TopCategoryBar from '@pages/JobListTemplate/_Components/TopCategoryBar';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import ProfileSidebar from '@pages/ProfileTemplate/_Component/ProfileSidebar';
 import GigManagement from '@pages/ProfileTemplate/_Component/GigManagement';
 import type { JSX } from 'react';
+import NavbarMainPage from "@components/Navbar/page.tsx";
 
 function ProfileTemplate(): JSX.Element {
   const [inputValue, setInputValue] = useState('');
@@ -16,7 +17,7 @@ function ProfileTemplate(): JSX.Element {
 
   return (
     <>
-      <Navbar
+      <NavbarMainPage
         variant="JOB"
         inputValue={inputValue}
         onChangeInput={setInputValue}

@@ -1,12 +1,12 @@
-import { Outlet } from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
 import FooterHome from '@components/Footer';
-import Navbar from '@components/Navbar';
-import type { JSX } from 'react';
+import type {JSX} from 'react';
+import NavbarMainPage from "@components/Navbar/page.tsx";
 
 function HomeTemplate(): JSX.Element {
   return (
     <div className="min-h-screen w-full bg-white">
-      <Navbar variant="HOME" />
+      <NavbarMainPage variant = 'HOME'/>
       <Outlet />
       <FooterHome />
     </div>

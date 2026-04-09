@@ -1,4 +1,4 @@
-import type { FooterCol } from '@types';
+import type {FooterCol} from "@components/Navbar/types.ts";
 
 const footerColumns: FooterCol[] = [
     {
@@ -61,17 +61,17 @@ const footerColumns: FooterCol[] = [
 function FooterColumn({ column }: { column: FooterCol }) {
     return (
         <div>
-            <h3 className="mb-4 text-base font-bold text-slate-900">{column.title}</h3>
+            <h3 className="mb-4 text-[20px] font-bold text-slate-900">{column.title}</h3>
             <ul className="space-y-3">
                 {column.items.map((item) => (
                     <li key={item.label}>
                         <button
                             type="button"
-                            className="text-left text-sm text-slate-500 transition hover:text-slate-900"
+                            className="text-left text-[14px] text-slate-500 transition hover:text-slate-900"
                         >
                             {item.label}
                             {item.subLabel && (
-                                <span className="block text-xs text-slate-400">{item.subLabel}</span>
+                                <span className="block text-[12px] text-slate-400">{item.subLabel}</span>
                             )}
                         </button>
                     </li>
@@ -92,11 +92,11 @@ export default function FooterHome() {
                 </div>
 
                 <div className="mt-12 flex flex-col gap-4 border-t border-slate-200 pt-6 md:flex-row md:items-center md:justify-between">
-                    <div className="text-3xl font-extrabold tracking-tight text-black">
+                    <div className="text-[30px] font-extrabold tracking-tight text-black">
                         fiverr<span className="text-emerald-500">.</span>
                     </div>
 
-                    <div className="text-sm text-slate-500">
+                    <div className="text-[14px] text-slate-500">
                         © {new Date().getFullYear()} Fiverr Clone. All rights reserved.
                     </div>
                 </div>

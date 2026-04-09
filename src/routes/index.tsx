@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { Navigate, Route } from 'react-router-dom';
-import type { RouteType } from '@types';
+import type {RouteType} from "./types.ts";
 
 const routes: RouteType[] = [
   {

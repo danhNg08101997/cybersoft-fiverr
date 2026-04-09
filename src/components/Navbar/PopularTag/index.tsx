@@ -1,4 +1,5 @@
 import type {PopularTag} from "@types";
+import type {PopularTagProps} from "@components/Navbar/types.ts";
 
 const popularTags: PopularTag[] = [
     'Website Design',
@@ -7,9 +8,6 @@ const popularTags: PopularTag[] = [
     'Drop shipping',
 ];
 
-type PopularTagProps = {
-    redirectToJobList?:(value: string) => void;
-}
 export default function PopularTags({redirectToJobList}: PopularTagProps) {
     return (
         <div className="mt-6 flex flex-wrap items-center gap-3 text-white/90">

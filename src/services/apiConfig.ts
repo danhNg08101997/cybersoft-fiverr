@@ -1,6 +1,6 @@
-import axios, { type InternalAxiosRequestConfig } from "axios";
-import { env } from "@config/env";
-import { clearStoredUser, getAccessToken } from "@utils/storage";
+import axios, {type InternalAxiosRequestConfig} from "axios";
+import {env} from "@config/env";
+import {getAccessToken} from "@utils/storage";
 
 export const apiConfig = axios.create({
   baseURL: env.apiBaseUrl,
@@ -26,12 +26,46 @@ apiConfig.interceptors.request.use(
 
 apiConfig.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const statusCode = error?.response?.status;
+    const originalRequest = error.config;
 
-    if (statusCode === 401) {
-      clearStoredUser();
+    if (statusCode === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        const refreshToken = localStorage.getItem('refreshToken');
+
+        if (!refreshToken) {
+            localStorage.clear();
+            window.location.href = '/sign-in';
+            return Promise.reject(error);
+        }
+
+        try {
+            const res = await axios.post(
+                `${env.apiBaseUrl}/auth/refresh`,
+                {
+                    refreshToken,
+                }
+            );
+
+            const newAccessToken = res.data.content.tokens.accessToken;
+            const newRefreshToken = res.data.content.tokens.refreshToken;
+
+            localStorage.setItem('accessToken', newAccessToken);
+            localStorage.setItem('refreshToken', newRefreshToken);
+
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+            return apiConfig(originalRequest);
+
+        }catch (refreshError){
+            localStorage.clear();
+            window.location.href = '/sign-in';
+            return Promise.reject(refreshError);
+        }
+
     }
+
 
     return Promise.reject(error);
   },

@@ -1,4 +1,3 @@
-import Navbar from '@components/Navbar/index.backup.tsx';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import TopCategoryBar from '@pages/JobListTemplate/_Components/TopCategoryBar';
@@ -7,6 +6,7 @@ import JobTypeContent from '@pages/JobListAndJobType/_Components/JobTypeContent'
 import JobTypeCarousel from '@pages/JobListAndJobType/_Components/JobTypeCarousel';
 import RelatedServicesSection from '@pages/JobListAndJobType/_Components/RelatedServicesSection';
 import type { JSX } from 'react';
+import NavbarMainPage from "@components/Navbar/page.tsx";
 
 function JobListAndJobType(): JSX.Element {
   const [searchParams] = useSearchParams();
@@ -25,7 +25,7 @@ function JobListAndJobType(): JSX.Element {
 
   return (
     <>
-      <Navbar
+      <NavbarMainPage
         variant="JOB"
         inputValue={inputValue}
         onChangeInput={setInputValue}

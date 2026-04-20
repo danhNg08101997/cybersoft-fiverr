@@ -1,25 +1,12 @@
-import type { AuthModalProps, RegisterFormValues } from '@types';
-import {
-  Alert,
-  Button,
-  DatePicker,
-  Form,
-  type FormProps,
-  Input,
-  Modal,
-  Select,
-} from 'antd';
-import type { AppDispatch, RootState } from '@store/index';
-import { useDispatch, useSelector } from 'react-redux';
+import type {RegisterFormValues} from '@types';
+import {Alert, Button, DatePicker, Form, type FormProps, Input, Modal, Select,} from 'antd';
+import type {AppDispatch, RootState} from '@store/index';
+import {useDispatch, useSelector} from 'react-redux';
 import dayjs from 'dayjs';
-import { registerService, resetRegisterState } from '@services/register.service';
+import {registerService, resetRegisterState} from '@services/register.service';
 import React from 'react';
-import {
-  LockOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import {LockOutlined, MailOutlined, PhoneOutlined, UserOutlined,} from '@ant-design/icons';
+import type {AuthModalProps} from "@components/Navbar/types.ts";
 
 export default function RegisterComponent(
   props: AuthModalProps,

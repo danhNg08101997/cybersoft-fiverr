@@ -15,3 +15,10 @@ export type FooterCol = {
 export type PopularTagProps = {
     redirectToJobList?:(value: string) => void;
 }
+
+export type AuthModalProps = {
+    isOpen: boolean;
+    onClose?: () => void;
+    onSwitchToLogin?: () => void;
+    onSwitchToRegister?: () => void;
+};

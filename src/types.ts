@@ -40,13 +40,6 @@ export type RegisterPayload = {
   certification?: string[];
 };
 
-export type AuthModalProps = {
-  isOpen: boolean;
-  onClose?: () => void;
-  onSwitchToLogin?: () => void;
-  onSwitchToRegister?: () => void;
-};
-
 export type RegisterFormValues = {
   name: string;
   email: string;

@@ -12,7 +12,7 @@ apiConfig.interceptors.request.use(
     const accessToken = getAccessToken();
 
     config.headers = config.headers ?? {};
-    // config.headers.TokenCybersoft = env.cybersoftToken;
+    config.headers.TokenCybersoft = env.cybersoftToken;
 
     if (accessToken) {
       config.headers.token = accessToken;
@@ -36,7 +36,8 @@ apiConfig.interceptors.response.use(
 
         if (!refreshToken) {
             localStorage.clear();
-            window.location.href = '/sign-in';
+            // window.location.href = '/sign-in';
+            window.location.href = '/signin';
             return Promise.reject(error);
         }
 
@@ -60,7 +61,8 @@ apiConfig.interceptors.response.use(
 
         }catch (refreshError){
             localStorage.clear();
-            window.location.href = '/sign-in';
+            // window.location.href = '/sign-in';
+            window.location.href = '/signin';
             return Promise.reject(refreshError);
         }
 

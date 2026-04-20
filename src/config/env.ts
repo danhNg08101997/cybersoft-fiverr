@@ -1,6 +1,6 @@
 const requiredEnv = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
-  // cybersoftToken: import.meta.env.VITE_CYBERSOFT_TOKEN,
+  cybersoftToken: import.meta.env.VITE_CYBERSOFT_TOKEN,
 };
 
 function getEnvValue(value: string | undefined, name: string): string {
@@ -12,5 +12,5 @@ function getEnvValue(value: string | undefined, name: string): string {
 
 export const env = {
   apiBaseUrl: getEnvValue(requiredEnv.apiBaseUrl, 'VITE_API_BASE_URL'),
-  // cybersoftToken: getEnvValue(requiredEnv.cybersoftToken, 'VITE_CYBERSOFT_TOKEN'),
+  cybersoftToken: getEnvValue(requiredEnv.cybersoftToken, 'VITE_CYBERSOFT_TOKEN'),
 };

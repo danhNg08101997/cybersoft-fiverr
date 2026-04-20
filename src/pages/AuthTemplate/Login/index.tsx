@@ -1,11 +1,12 @@
 import type { FormProps } from "antd";
 import { Alert, Button, Form, Input, Modal } from "antd";
-import type { AuthModalProps, LoginPayload } from "@types";
+import type { LoginPayload } from "@types";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@store/index";
 import { loginService, resetLoginState } from "@services/login.service";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import type {AuthModalProps} from "@components/Navbar/types.ts";
 
 function LoginComponent(props: AuthModalProps): React.JSX.Element {
   const { isOpen, onClose, onSwitchToRegister } = props;

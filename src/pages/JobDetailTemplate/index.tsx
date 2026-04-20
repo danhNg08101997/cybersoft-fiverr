@@ -60,8 +60,12 @@ export default function JobDetailTemplate() {
   const handleAddComment: FormProps<BinhLuanPayload>['onFinish'] = async (values) => {
     if (!currentUser) {
       setIsLoginModal(true);
+      console.log("🚀 ~ JobDetailTemplate ~ isLoginModal: ", isLoginModal);
       return;
     }
+
+    console.log("🚀 ~ JobDetailTemplate ~ 1 ~ isLoginModal: ", isLoginModal);
+
 
     const payload = {
       maCongViec: Number(maCongViec),

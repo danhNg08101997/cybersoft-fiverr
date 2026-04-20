@@ -2,7 +2,7 @@ import Logo from "@components/Navbar/Logo";
 import {useDispatch, useSelector} from "react-redux";
 import type {AppDispatch, RootState} from "@store/index.ts";
 import {NavLink, useNavigate} from "react-router-dom";
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import type {NavbarProps} from "@components/Navbar/types.ts";
 import {logout} from "@services/login.service.ts";
 import {ChevronDown, Globe, Menu, Search, X} from 'lucide-react';
@@ -25,7 +25,7 @@ export default function NavbarMainPage({
                                            onCloseLoginRequest,
                                        }: NavbarProps) {
     const [homeQuery, setHomeQuery] = useState('');
-    const [isLoginModal, setIsLoginModal] = useState(false);
+    const [isLoginModal, setIsLoginModal] = useState(() => !!checkLogin);
     const [isRegisterModal, setIsRegisterModal] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -37,9 +37,11 @@ export default function NavbarMainPage({
     const trimmedHomeQuery = useMemo(() => homeQuery.trim(), [homeQuery]);
     const trimmedJobQuery = useMemo(() => inputValue.trim(), [inputValue]);
 
-    if (checkLogin) {
-        setIsLoginModal(true);
-    }
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsLoginModal(!!checkLogin);
+    }, [checkLogin]);
+
 
     const openLogin = () => {
         setIsMobileMenuOpen(false);

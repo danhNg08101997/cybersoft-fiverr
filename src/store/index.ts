@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@services/login.service';
 import registerReducer from '@services/register.service';
-import searchJobReducer from '@services/searchJob.service';
+import layDSCongViecTheoTenReducer from '@services/layDSCongViecTheoTen.service.ts';
 import menuCongViecReducer from '@services/menuCongViec.service';
 import layChiTietLoaiCongViecReducer from '@services/layChiTietLoaiCongViec.service';
 import layLoaiCongViecReducer from '@services/layLoaiCongViec.service';
@@ -15,7 +15,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     register: registerReducer,
-    searchJob: searchJobReducer,
+    layDSCongViecTheoTen: layDSCongViecTheoTenReducer,
     menuCongViec: menuCongViecReducer,
     layChiTietLoaiCongViec: layChiTietLoaiCongViecReducer,
     layLoaiCongViec: layLoaiCongViecReducer,

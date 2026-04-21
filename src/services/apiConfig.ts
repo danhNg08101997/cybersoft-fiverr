@@ -4,7 +4,6 @@ import {getAccessToken} from "@utils/storage";
 
 export const apiConfig = axios.create({
   baseURL: env.apiBaseUrl,
-  // timeout: 15000,
 });
 
 apiConfig.interceptors.request.use(
@@ -37,7 +36,6 @@ apiConfig.interceptors.response.use(
         if (!refreshToken) {
             localStorage.clear();
             // window.location.href = '/sign-in';
-            window.location.href = '/signin';
             return Promise.reject(error);
         }
 
@@ -62,7 +60,6 @@ apiConfig.interceptors.response.use(
         }catch (refreshError){
             localStorage.clear();
             // window.location.href = '/sign-in';
-            window.location.href = '/signin';
             return Promise.reject(refreshError);
         }
 

@@ -14,7 +14,7 @@ const initialState: InitState<DSCongViecTheoTen[]> = {
   error: null,
 };
 
-export const searchJobService = createAsyncThunk<
+export const layDSCongViecTheoTenService = createAsyncThunk<
   DSCongViecTheoTen[],
   string,
   { rejectValue: AppError }
@@ -32,21 +32,21 @@ export const searchJobService = createAsyncThunk<
   }
 });
 
-const searchJobSlice = createSlice({
+const layDSCongViecTheoTenSlice = createSlice({
   name: 'searchJob',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(searchJobService.pending, (state) => {
+    builder.addCase(layDSCongViecTheoTenService.pending, (state) => {
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(searchJobService.fulfilled, (state, action) => {
+    builder.addCase(layDSCongViecTheoTenService.fulfilled, (state, action) => {
       state.loading = false;
       state.data = action.payload;
       state.error = null;
     });
-    builder.addCase(searchJobService.rejected, (state, action) => {
+    builder.addCase(layDSCongViecTheoTenService.rejected, (state, action) => {
       state.loading = false;
       state.error =
         action.payload ?? {
@@ -56,4 +56,4 @@ const searchJobSlice = createSlice({
   },
 });
 
-export default searchJobSlice.reducer;
+export default layDSCongViecTheoTenSlice.reducer;

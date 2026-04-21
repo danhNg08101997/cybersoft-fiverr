@@ -3,11 +3,11 @@ import JobCard from '@pages/JobListTemplate/_Components/JobListContent/JobCard';
 import JobPagination from '@pages/JobListTemplate/_Components/JobListContent/JobPagination';
 import type { AppDispatch, RootState } from '@store/index';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchJobService } from '@services/searchJob.service';
 import { layChiTietLoaiCongViecService } from '@services/layChiTietLoaiCongViec.service';
 import type { DSCongViecTheoTen } from '@types';
 import { NavLink } from 'react-router-dom';
 import AppLoader from '@shared/AppLoader';
+import {layDSCongViecTheoTenService} from "@services/layDSCongViecTheoTen.service.ts";
 
 type JobListContentProps = {
   keyword?: string;
@@ -28,10 +28,10 @@ export default function JobListContent({
   const dispatch: AppDispatch = useDispatch();
 
   const {
-    data: searchJob,
-    loading: searchLoading,
-    error: searchError,
-  } = useSelector((state: RootState) => state.searchJob);
+    data: dsCongViecTheoTenData,
+    loading: dsCongViecTheoTenLoading,
+    error: dsCongViecTheoTenError,
+  } = useSelector((state: RootState) => state.layDSCongViecTheoTen);
 
   const {
     data: chiTietLoaiCongViec,
@@ -43,11 +43,11 @@ export default function JobListContent({
     if (maChiTietLoai && !keyword) {
       return chiTietLoaiCongViec || [];
     }
-    return searchJob || [];
-  }, [maChiTietLoai, keyword, chiTietLoaiCongViec, searchJob]);
+    return dsCongViecTheoTenData || [];
+  }, [maChiTietLoai, keyword, chiTietLoaiCongViec, dsCongViecTheoTenData]);
 
-  const loading = maChiTietLoai && !keyword ? detailTypeLoading : searchLoading;
-  const error = maChiTietLoai && !keyword ? detailTypeError : searchError;
+  const loading = maChiTietLoai && !keyword ? detailTypeLoading : dsCongViecTheoTenLoading;
+  const error = maChiTietLoai && !keyword ? detailTypeError : dsCongViecTheoTenError;
 
   useEffect(() => {
     getLength?.(jobs.length);
@@ -64,7 +64,7 @@ export default function JobListContent({
 
     const effectiveKeyword = inputValue || keyword;
     if (effectiveKeyword.trim()) {
-      dispatch(searchJobService(effectiveKeyword));
+      dispatch(layDSCongViecTheoTenService(effectiveKeyword));
     }
   }, [dispatch, keyword, inputValue, maChiTietLoai]);
 

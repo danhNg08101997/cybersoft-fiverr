@@ -23,7 +23,7 @@ export const loginService = createAsyncThunk<
 >("auth/login", async (user, { rejectWithValue }) => {
   try {
     const response = await apiConfig.post<TApiResponse<LoginResponse>>(
-      "auth/sign-in",
+      "auth/signin",
       user,
     );
 

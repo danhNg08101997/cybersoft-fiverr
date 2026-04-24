@@ -85,11 +85,6 @@ export type Testimonial = {
   videoThumb: string;
 };
 
-export type Feature = {
-  title: string;
-  desc: string;
-};
-
 export type PopularTag = string;
 
 export type CongViec = {

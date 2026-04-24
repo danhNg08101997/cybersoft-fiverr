@@ -1,4 +1,7 @@
-import type {Feature} from "@types";
+type Feature = {
+    title: string;
+    desc: string;
+};
 
 const features: Feature[] = [
     {
